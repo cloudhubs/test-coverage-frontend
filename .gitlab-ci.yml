@@ -1,6 +1,7 @@
 build-job:
   stage: build
   script:
+    - which npm
     - npm install
   artifacts:
     paths: 
