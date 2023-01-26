@@ -9,9 +9,9 @@ build-job:
       - node_modules
 
 test-job1:
-  stage: test
+  stage: deploy
   script:
-    - echo "This job tests something"
+    - npm start
 
 test-job2:
   stage: test
