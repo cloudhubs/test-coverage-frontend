@@ -1,7 +1,10 @@
 build-job:
   stage: build
   script:
-    - echo "Hello, $GITLAB_USER_LOGIN!"
+    - npm install
+  artifacts:
+    paths: 
+      - node_modules
 
 test-job1:
   stage: test
