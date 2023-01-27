@@ -11,7 +11,9 @@ build-job:
 test-job1:
   stage: deploy
   script:
-    - npm start
+    - scp -r build/* 129.62.148.40:/c/test-coverage-frontend/test-coverage-frontend
+  only:
+    - master 
 
 test-job2:
   stage: test
