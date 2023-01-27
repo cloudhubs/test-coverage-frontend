@@ -11,7 +11,7 @@ build-job:
 test-job1:
   stage: deploy
   script:
-    - scp -r build/* 129.62.148.40:/c/test-coverage-frontend/test-coverage-frontend
+    - scp -r build/* 129.62.148.40:C:/test-coverage-frontend/test-coverage-frontend/
   only:
     - master 
 
