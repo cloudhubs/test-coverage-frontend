@@ -1,30 +1,21 @@
 image: node:latest
 
+cache:
+  paths:
+    - node_modules/
+
 build-job:
   stage: build
   script:
     - npm install
+    - npm run build
   artifacts:
     paths: 
-      - node_modules
+      - build/
 
-test-job1:
+deploy-job:
   stage: deploy
   script:
     - scp -r build/* 192.168.3.211:~/home/donovan
   only:
-    - master 
-
-test-job2:
-  stage: test
-  script:
-    - echo "This job tests something, but takes more time than test-job1."
-    - echo "After the echo commands complete, it runs the sleep command for 20 seconds"
-    - echo "which simulates a test that runs 20 seconds longer than test-job1"
-    - echo "donny is him"
-
-deploy-prod:
-  stage: deploy
-  script:
-    - echo "This job deploys something from the $CI_COMMIT_BRANCH branch."
-  environment: production
+    - master
