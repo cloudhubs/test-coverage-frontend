@@ -26,6 +26,8 @@ deploy-job:
   script:
     - eval $(ssh-agent -s)
     - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add - 
-    - scp -o StrictHostKeyChecking=no -i ~/.ssh/id_ed25519 -r build/* 192.168.3.211:~/home/donovan/
+    - ssh-keyscan -H 192.168.3.211 >> ~/.ssh/known_hosts
+    - rsync -r --delete-after --quiet build/ 192.168.3.211:~/home/donovan
+ 
   only:
     - main
