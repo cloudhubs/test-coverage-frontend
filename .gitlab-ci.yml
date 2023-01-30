@@ -24,8 +24,9 @@ build-job:
 deploy-job:
   stage: deploy
   script:
-    - chmod 400 $SSH_PRIVATE_KEY
-    - ssh -o StrictHostKeyChecking=no -i $SSH_PRIVATE_KEY 192.168.3.211 'cd ~/testCoverageFrontend && git pull origin main'
- 
+    - eval "$(ssh-agent -s)"
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+    - ssh-keyscan 192.168.3.211 >> ~/.ssh/known_hosts
+    - ssh -o StrictHostKeyChecking=no 192.168.3.211 'cd ~/testCoverageFrontend && git pull origin main'
   only:
     - main
