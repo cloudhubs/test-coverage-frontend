@@ -2,7 +2,6 @@ image: node:latest
 
 before_script:
   - apt-get update -y && apt-get install sshpass -y
-  - apt-get install git
 
 stages:
   - build
