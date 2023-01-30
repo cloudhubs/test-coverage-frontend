@@ -26,6 +26,6 @@ build-job:
 deploy-job:
   stage: deploy
   script:
-    - scp -r build/* 192.168.3.211:~/home/donovan -o StrictHostKeyChecking=no echo $SCP_PASSWORD | sshpass -p - ssh 192.168.3.211 "chmod -R 755 ~/home/donovan"
+    - scp -rp build/* 192.168.3.211:~/home/donovan -o StrictHostKeyChecking=no echo $SCP_PASSWORD | sshpass -p - ssh 192.168.3.211 "chmod -R 755 ~/home/donovan"
   only:
     - main
