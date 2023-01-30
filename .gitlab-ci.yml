@@ -1,5 +1,9 @@
 image: node:latest
 
+stages:
+  - build
+  - deploy
+
 cache:
   paths:
     - node_modules/
