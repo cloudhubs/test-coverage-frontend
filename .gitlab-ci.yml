@@ -7,8 +7,6 @@ stages:
   - build
   - deploy
 
-variables:
-  SCP_PASSWORD: "groupNumber01"  
 
 cache:
   paths:
@@ -26,7 +24,6 @@ build-job:
 deploy-job:
   stage: deploy
   script:
-    - echo $SCP_PASSWORD | sshpass -p - scp -rp build/ 192.168.3.211:~/home/donovan/ -o StrictHostKeyChecking=no
-    - echo $SCP_PASSWORD | sshpass -p - ssh 192.168.3.211 "chmod -R 755 ~/home/donovan"
+    - scp -o StrictHostKeyChecking=no -i "$SSH_PRIVATE_KEY" -r build/* 192.168.3.211:~/home/donovan/
   only:
     - main
