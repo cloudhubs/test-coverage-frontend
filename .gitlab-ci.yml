@@ -27,7 +27,7 @@ deploy-job:
     - eval $(ssh-agent -s)
     - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add - 
     - ssh-keyscan -H 192.168.3.211 >> ~/.ssh/known_hosts
-    - rsync -r --delete-after --quiet build/ 192.168.3.211:~/home/donovan
+    - ssh -o StrictHostKeyChecking=no 192.168.3.211 'cd ~/testCoverageFrontend && git pull origin main'
  
   only:
     - main
