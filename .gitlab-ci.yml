@@ -21,6 +21,15 @@ build-job:
     paths: 
       - build/
 
+build image:
+  image: docker:latest
+  services:
+    - docker:dind
+  stage: build
+  script:
+    - echo "Building Docker image"
+    - docker build -t test-coverage-frontend .
+
 deploy-job:
   stage: deploy
   script:
