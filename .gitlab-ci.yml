@@ -7,7 +7,6 @@ stages:
   - build
   - deploy
 
-
 cache:
   paths:
     - node_modules/
@@ -20,17 +19,6 @@ build-job:
   artifacts:
     paths: 
       - build/
-
-build image:
-  image: docker:latest
-  services:
-    - docker:dind
-  stage: deploy
-  script:
-    - echo "Building Docker image"
-    - docker build -t test-coverage-frontend .
-  only:
-    - main
 
 deploy-job:
   stage: deploy
