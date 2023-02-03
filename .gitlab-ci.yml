@@ -21,6 +21,9 @@ build-job:
       - build/
 
 build docker image:
+  image: docker:latest
+  services:
+    - docker:dind
   stage: deploy
   script:
     - echo "Building Docker image"
@@ -29,6 +32,9 @@ build docker image:
     - main
 
 push_docker_image:
+  image: docker:latest
+  services:
+    - docker:dind
   stage: deploy
   script:
     - echo "Pushing Docker image to registry"
