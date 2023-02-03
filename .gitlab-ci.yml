@@ -20,6 +20,22 @@ build-job:
     paths: 
       - build/
 
+build docker image:
+  stage: deploy
+  script:
+    - echo "Building Docker image"
+    - docker build -t testCoverageFrontend .
+  only:
+    - main
+
+push_docker_image:
+  stage: deploy
+  script:
+    - echo "Pushing Docker image to registry"
+    - docker push testCoverageFrontend
+  only:
+    - main
+
 deploy-job:
   stage: deploy
   script:
