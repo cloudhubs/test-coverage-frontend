@@ -29,6 +29,8 @@ build image:
   script:
     - echo "Building Docker image"
     - docker build -t test-coverage-frontend .
+  only:
+    - main
 
 deploy-job:
   stage: deploy
