@@ -1,13 +1,11 @@
 FROM node:latest
 WORKDIR /app
 
-COPY package*.json ./
+COPY package*.json yarn.lock ./
 
-RUN npm install --global yarn
-RUN npm install
-RUN npm install react-scripts
+RUN yarn install
 
-COPY . ./
+COPY . .
 
 #Start the app
-CMD ["npm", "start"]
+CMD ["yarn", "start"]
