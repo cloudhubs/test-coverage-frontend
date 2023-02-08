@@ -2,6 +2,7 @@ image: node:latest
 before_script:
   - apt-get update -y && apt-get install sshpass -y
 stages:
+  - .pre
   - build
   - deploy
 variables:
@@ -13,7 +14,7 @@ cache:
     - node_modules/
 
 Build Project:
-  stage: build
+  stage: .pre
   script:
     - npm install
     - npm run build
