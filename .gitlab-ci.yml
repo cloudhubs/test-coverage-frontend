@@ -55,6 +55,7 @@ Deploy Docker Image:
     - mkdir -p ~/.ssh
     - ssh-keyscan -H $VMADDR >> ~/.ssh/known_hosts
 
+    - echo $CI_REGISTRY_PASSWORD | docker login -u $CI_REGISTRY_USER $CI_REGISTRY --password-stdin 
     - docker pull $CI_REGISTRY_IMAGE
     - docker save $CI_REGISTRY_IMAGE -o $TAR_IMAGE_NAME
     - scp $TAR_IMAGE_NAME $HOST_NAME@$VMADDR:~/testCoverageFrontend
