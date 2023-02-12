@@ -59,7 +59,7 @@ Deploy Docker Image:
     - docker pull $CI_REGISTRY_IMAGE
     - docker save $CI_REGISTRY_IMAGE -o $TAR_IMAGE_NAME
     - scp $TAR_IMAGE_NAME $HOST_NAME@$VMADDR:~/testCoverageFrontend
-    - ssh $HOST_NAME@$VMADDR "cd testCoverageFrontend && tar xvf $TAR_IMAGE_NAME && docker load -i $TAR_IMAGE_NAME && docker tag $CI_REGISTRY_IMAGE frontend && docker run -d -p 80:80 frontend"
+    - ssh $HOST_NAME@$VMADDR "cd testCoverageFrontend && tar xvf $TAR_IMAGE_NAME && docker load -i $TAR_IMAGE_NAME && docker tag $CI_REGISTRY_IMAGE frontend && docker run -d -p --network=host 8080:8080 frontend"
     #- used to be capgit.ecs.baylor.edu:5555/capstone-group-4/test-coverage-frontend instead of $CI_REGISTRY_IMAGE
   only:
     - main
