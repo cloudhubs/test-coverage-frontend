@@ -1,5 +1,5 @@
 import logo from './logo.svg';
-import ScalaButton from './ScalaButton';
+import FileUploadButton from './FileUploadButton'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 
@@ -24,7 +24,7 @@ function App() {
     </div>
     */
     <div>
-     <ScalaButton/>
+      <FileUploadButton/>
     </div>
   );
 }
