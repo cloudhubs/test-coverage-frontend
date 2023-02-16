@@ -17,7 +17,7 @@ Build Project:
   stage: build
   script:
     - yarn install
-    - yarn start
+    - yarn run build
   artifacts:
     paths: 
       - build/
