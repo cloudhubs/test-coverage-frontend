@@ -16,8 +16,8 @@ cache:
 Build Project:
   stage: build
   script:
-    - npm install
-    - npm run build
+    - yarn install
+    - yarn start
   artifacts:
     paths: 
       - build/
