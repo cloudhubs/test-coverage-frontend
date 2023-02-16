@@ -2,8 +2,8 @@ image: node:latest
 before_script:
   - apt-get update -y && apt-get install sshpass -y
 stages:
-  - .pre
   - build
+  - buildImage
   - deploy
 variables:
   HOST_NAME: donovan
@@ -14,7 +14,7 @@ cache:
     - node_modules/
 
 Build Project:
-  stage: .pre
+  stage: build
   script:
     - npm install
     - npm run build
@@ -24,7 +24,7 @@ Build Project:
 
 Build Docker Image:
   image: docker:19.03.12
-  stage: build
+  stage: buildImage
   services:
     - name: docker:19.03.12-dind
       entrypoint: ["dockerd-entrypoint.sh", "--tls=false"]
