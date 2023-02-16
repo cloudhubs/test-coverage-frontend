@@ -1,4 +1,4 @@
-import { ChangeEvent, useState, useEffect } from 'react';
+import { ChangeEvent, useState } from 'react';
 import axios from "axios"
 import { Button, Modal } from 'react-bootstrap'
 
@@ -40,7 +40,7 @@ const FileUploadButton = () => {
         }).then((res) => {
             console.log(res.data)
             setResults(res.data)
-        }). catch((err) => console.error(err))
+        }).catch((err) => console.error(err))
     }
 
     return (

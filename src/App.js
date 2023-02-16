@@ -1,4 +1,3 @@
-import logo from './logo.svg';
 import FileUploadButton from './FileUploadButton'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
