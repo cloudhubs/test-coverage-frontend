@@ -25,20 +25,21 @@ const FileUploadButton = () => {
     const handleClose = () => setShow(false)
 
     const handleShow = () => {
-        
-
         setShow(true)
     }
 
-    const sendFile = (file) => {
+    const sendFile = () => {
         //send file to backend to get the results
-        axios.post("localhost:8080/selenium", file, {
+        const formData = new FormData();
+        formData.append('file', file);
+
+        axios.post("http://localhost:8080/tests/selenium/getAll", formData, {
             headers: {
-                'content-type': file.type,
-                'content-length': `${file.size}`,
+                'Content-Type': 'multipart/form-data'
               },
         }).then((res) => {
-            setResults(res)
+            console.log(res.data)
+            setResults(res.data)
         }). catch((err) => console.error(err))
     }
 
@@ -54,10 +55,14 @@ const FileUploadButton = () => {
                 <Modal.Header>
                     <Modal.Title>Endpoints Tested</Modal.Title>
                 </Modal.Header>
-                <Modal.Body>{results}</Modal.Body>
+                <Modal.Body>
+                  <div style={{ whiteSpace: 'pre'}}>
+                    {results}
+                  </div>
+                </Modal.Body>
                 <Modal.Footer>
                     <Button variant="success" onClick={handleClose}>
-                        Ok
+                      Ok
                     </Button>
                 </Modal.Footer>
             </Modal>
