@@ -1,8 +1,25 @@
 import FileUploadButton from './FileUploadButton'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
+import React, { useState, useEffect, createContext } from 'react';
+import Button from 'react-bootstrap/Button'
 
 function App() {
+  const [theme, setTheme] = useState('light');
+  const toggleTheme = () => {
+    console.log(theme)
+    if (theme === 'light') {
+      setTheme('dark');
+    } else {
+      setTheme('light');
+    }
+  };
+  
+  
+  useEffect(() => {
+    document.body.className = theme;
+  }, [theme]);
+
   return (
     /*
     <div className="App">
@@ -22,9 +39,14 @@ function App() {
       </header>
     </div>
     */
-    <div>
-      <FileUploadButton/>
+   <>
+    <div className={`App ${theme}`}>
+      <Button variant={theme === 'light' ? "primary" : "dark"} onClick={toggleTheme}>Toggle Theme</Button>
     </div>
+    <div>
+      <FileUploadButton theme={theme}/>
+    </div>
+    </>
   );
 }
 
