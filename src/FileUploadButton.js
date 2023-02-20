@@ -2,7 +2,8 @@ import { ChangeEvent, useState } from 'react';
 import axios from "axios"
 import { Button, Modal } from 'react-bootstrap'
 
-const FileUploadButton = () => {
+const FileUploadButton = (props) => {
+    const theme = props.theme
     const [file, setFile] = useState();
     const [show, setShow] = useState(false)
     const [results, setResults] = useState('none')
@@ -17,7 +18,6 @@ const FileUploadButton = () => {
         if (!file) {
             return;
         }
-        
         sendFile()
         handleShow()
     };
@@ -49,7 +49,7 @@ const FileUploadButton = () => {
 
             <div>{file && `${file.name} - ${file.type}`}</div>
 
-            <Button variant="primary" onClick={handleUploadClick}>Upload</Button>
+            <Button variant={theme === 'light' ? "primary" : "dark"} onClick={handleUploadClick}>Upload</Button>
 
             <Modal show={show} onHide={handleClose}>
                 <Modal.Header>

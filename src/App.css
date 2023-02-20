@@ -36,3 +36,23 @@
     transform: rotate(360deg);
   }
 }
+
+.dark {
+  background-color: #333;
+  color: #fff;
+}
+.light {
+  background-color: #fff;
+  color: #333;
+}
+.menubar {
+  background-color: #1c1b21;
+}
+.btn-dark {
+  background-color: #dc85f6;
+  color: #fff;
+}
+.btn-dark:hover {
+  background-color: #6e3080
+}
+

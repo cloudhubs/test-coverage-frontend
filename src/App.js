@@ -1,14 +1,30 @@
+import React, { useState, useEffect } from 'react';
+import Button from 'react-bootstrap/Button'
 import FileUploadButton from './FileUploadButton'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 import { Data } from "./Data.js";
 import CoverageChart from "./CoverageChart";
-import {Chart, ArcElement} from 'chart.js'
+import {Chart, ArcElement} from 'chart.js';
+
 Chart.register(ArcElement);
 
 export default function App() {
+  const [theme, setTheme] = useState('light');
+  const toggleTheme = () => {
+    console.log(theme)
+    if (theme === 'light') {
+      setTheme('dark');
+    } else {
+      setTheme('light');
+    }
+  };
+  
+  useEffect(() => {
+    document.body.className = theme;
+  }, [theme]);
 
-    /*
+  /*
     const [chartData, setChartData] = useState({
         labels: Data.map((data) => data.year),
         datasets: [
@@ -43,14 +59,18 @@ export default function App() {
       }
     ]
   }
-
+  
   return (
-      <div>
-          <FileUploadButton/>
-          
-          <div style={/*TODO: change to use % */ {width: "400px", height: "400px"}}>
-              <CoverageChart  chartData={chartData} />
-          </div>
+    <>
+      <div className={`App ${theme}`}>
+        <Button variant={theme === 'light' ? "primary" : "dark"} onClick={toggleTheme}>Toggle Theme</Button>
       </div>
+      <div>
+        <FileUploadButton theme={theme}/>
+      </div>  
+      <div style={/*TODO: change to use % */ {width: "400px", height: "400px"}}>
+          <CoverageChart  chartData={chartData} />
+      </div>
+    </>
   );
 }
