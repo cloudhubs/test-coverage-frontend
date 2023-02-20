@@ -1,9 +1,9 @@
-import { ChangeEvent, useState } from 'react';
-import axios from "axios"
 import React from "react";
 import { Pie } from "react-chartjs-2";
 
-function CoverageChart({ chartData }) {
+function CoverageChart(props) {
+    const chartData = props.chartData
+
     return (
         <div className="chart-container">
             <h2 style={{ textAlign: "center" }}>Endpoint Coverage</h2>
