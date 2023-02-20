@@ -1,7 +1,6 @@
 import FileUploadButton from './FileUploadButton'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
-import { useState } from "react";
 import { Data } from "./Data.js";
 import CoverageChart from "./CoverageChart";
 import {Chart, ArcElement} from 'chart.js'
