@@ -1,7 +1,6 @@
 import { ChangeEvent, useState } from 'react';
 import axios from "axios"
 import {Button, Modal, Tab, Tabs} from 'react-bootstrap'
-import {Data} from "./Data";
 
 const FileUploadButton = (props) => {
     const theme = props.theme
