@@ -1,6 +1,6 @@
 import { ChangeEvent, useState } from 'react';
 import axios from "axios"
-import {Button, Modal, SplitButton} from 'react-bootstrap'
+import {Button, Modal} from 'react-bootstrap'
 
 const FileUploadButton = (props) => {
     const theme = props.theme
@@ -64,9 +64,8 @@ const FileUploadButton = (props) => {
             setProjectRes(responseString)
         }).catch((err) => console.error(err))
 
-        /*
         //sent testZip
-        await axios.post("http://localhost:8080/tests/selenium/getAll", testFormData, {
+        await axios.post("http://localhost:8080/tests/gatling/getAll", testFormData, {
             headers: {
                 'Content-Type': 'multipart/form-data'
               },
@@ -74,8 +73,6 @@ const FileUploadButton = (props) => {
             console.log(res.data)
             setResults(res.data)
         }).catch((err) => console.error(err))
-
-         */
     }
 
     return (

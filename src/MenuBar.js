@@ -1,4 +1,4 @@
-import { ChangeEvent, useState } from 'react'
+import { useState } from 'react'
 import {Navbar, Container, Button} from 'react-bootstrap'
 
 const MenuBar = (props) => {
