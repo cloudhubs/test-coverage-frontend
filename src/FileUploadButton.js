@@ -42,7 +42,7 @@ const FileUploadButton = (props) => {
         setShow(true)
     }
 
-    const sendFiles = () => {
+    const sendFiles = async() => {
         //send file to backend to get the results
         const projectFormData = new FormData();
         projectFormData.append('file', projectZip);
@@ -51,18 +51,22 @@ const FileUploadButton = (props) => {
         testFormData.append('file', testZip);
 
         //send project zip
-        axios.post("http://localhost:8080/tests/swagger/getEndPoints", projectFormData, {
+        await axios.post("http://localhost:8080/tests/swagger/getEndPoints", projectFormData, {
             headers: {
                 'Content-Type': 'multipart/form-data'
               },
         }).then((res) => {
-            console.log(res.data)
-            setProjectRes(JSON.stringify(res.data))
+            //console.log(res.data)
+            //JSON.parse(res.data).forEach(element => console.log(element.method))
+            const responseString = res.data.reduce((acc, obj) => {
+                return acc + `${obj.method} ${obj.path}\n`
+            }, '')
+            setProjectRes(responseString)
         }).catch((err) => console.error(err))
 
         /*
         //sent testZip
-        axios.post("http://localhost:8080/tests/selenium/getAll", testFormData, {
+        await axios.post("http://localhost:8080/tests/selenium/getAll", testFormData, {
             headers: {
                 'Content-Type': 'multipart/form-data'
               },
