@@ -1,6 +1,7 @@
 import { ChangeEvent, useState } from 'react';
 import axios from "axios"
 import {Button, Modal, Tab, Tabs} from 'react-bootstrap'
+import {Data} from "./Data";
 
 const FileUploadButton = (props) => {
     const theme = props.theme
@@ -71,7 +72,11 @@ const FileUploadButton = (props) => {
               },
         }).then((res) => {
             console.log(res.data)
-            setResults(res.data)
+            //setResults(res.data)
+            const responseString = res.data.reduce((acc, obj) => {
+                return acc + `${obj.method} ${obj.path}\n`
+            }, '')
+            setResults(responseString)
         }).catch((err) => console.error(err))
     }
 
