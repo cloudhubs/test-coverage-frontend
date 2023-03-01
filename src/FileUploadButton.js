@@ -1,6 +1,6 @@
 import { ChangeEvent, useState } from 'react';
 import axios from "axios"
-import { Button, Modal} from 'react-bootstrap'
+import {Button, Modal, SplitButton} from 'react-bootstrap'
 
 const FileUploadButton = (props) => {
     const theme = props.theme
@@ -10,6 +10,7 @@ const FileUploadButton = (props) => {
 
     const [show, setShow] = useState(false)
     const [results, setResults] = useState('none')
+    const [projectRes, setProjectRes] =  useState('none')
 
     const handleProjectZipChange = (e: ChangeEvent<HTMLInputElement>) => {
         if (e.target.files) {
@@ -50,15 +51,16 @@ const FileUploadButton = (props) => {
         testFormData.append('file', testZip);
 
         //send project zip
-        axios.post("http://localhost:8080/tests/swagger/getEndpoints", projectFormData, {
+        axios.post("http://localhost:8080/tests/swagger/getEndPoints", projectFormData, {
             headers: {
                 'Content-Type': 'multipart/form-data'
               },
         }).then((res) => {
             console.log(res.data)
-            setResults(res.data)
+            setProjectRes(JSON.stringify(res.data))
         }).catch((err) => console.error(err))
-        
+
+        /*
         //sent testZip
         axios.post("http://localhost:8080/tests/selenium/getAll", testFormData, {
             headers: {
@@ -68,6 +70,8 @@ const FileUploadButton = (props) => {
             console.log(res.data)
             setResults(res.data)
         }).catch((err) => console.error(err))
+
+         */
     }
 
     return (
@@ -102,11 +106,19 @@ const FileUploadButton = (props) => {
                   <div style={{ whiteSpace: 'pre'}}>
                     {results}
                   </div>
+                    <div style={{ whiteSpace: 'pre'}}>
+                        {projectRes}
+                    </div>
                 </Modal.Body>
                 <Modal.Footer>
                     <Button variant="success" onClick={handleClose}>
                       Ok
                     </Button>
+                    <div>
+                    <Button variant="success" onClick={handleClose}>
+                        Test
+                    </Button>
+                    </div>
                 </Modal.Footer>
             </Modal>
         </div>
