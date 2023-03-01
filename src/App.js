@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Button from 'react-bootstrap/Button'
 import FileUploadButton from './FileUploadButton'
+import MenuBar from './MenuBar'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 import { Data } from "./Data.js";
@@ -62,6 +63,7 @@ export default function App() {
   
   return (
     <>
+      <MenuBar theme={theme}/>
       <div className={`App ${theme}`}>
         <Button variant={theme === 'light' ? "primary" : "dark"} onClick={toggleTheme}>Toggle Theme</Button>
       </div>

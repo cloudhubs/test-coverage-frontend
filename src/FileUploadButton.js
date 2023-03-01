@@ -1,24 +1,37 @@
 import { ChangeEvent, useState } from 'react';
 import axios from "axios"
-import { Button, Modal } from 'react-bootstrap'
+import { Button, Modal} from 'react-bootstrap'
 
 const FileUploadButton = (props) => {
     const theme = props.theme
-    const [file, setFile] = useState();
+
+    const [projectZip, setProjectZip] = useState();
+    const [testZip, setTestZip] = useState();
+
     const [show, setShow] = useState(false)
     const [results, setResults] = useState('none')
 
-    const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const handleProjectZipChange = (e: ChangeEvent<HTMLInputElement>) => {
         if (e.target.files) {
-            setFile(e.target.files[0]);
+            setProjectZip(e.target.files[0]);
         }
     };
 
+    const handleTestZipChange = (e: ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files) {
+            setTestZip(e.target.files[0]);
+        }
+    };
+
+
     const handleUploadClick = () => {
-        if (!file) {
+        if (!projectZip) {
             return;
         }
-        sendFile()
+        if (!testZip) {
+            return;
+        }
+        sendFiles()
         handleShow()
     };
 
@@ -28,12 +41,26 @@ const FileUploadButton = (props) => {
         setShow(true)
     }
 
-    const sendFile = () => {
+    const sendFiles = () => {
         //send file to backend to get the results
-        const formData = new FormData();
-        formData.append('file', file);
+        const projectFormData = new FormData();
+        projectFormData.append('file', projectZip);
 
-        axios.post("http://localhost:8080/tests/selenium/getAll", formData, {
+        const testFormData = new FormData();
+        testFormData.append('file', testZip);
+
+        //send project zip
+        axios.post("http://localhost:8080/tests/selenium/getAll", projectFormData, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+              },
+        }).then((res) => {
+            console.log(res.data)
+            setResults(res.data)
+        }).catch((err) => console.error(err))
+        
+        //sent testZip
+        axios.post("http://localhost:8080/tests/selenium/getAll", testFormData, {
             headers: {
                 'Content-Type': 'multipart/form-data'
               },
@@ -45,9 +72,25 @@ const FileUploadButton = (props) => {
 
     return (
         <div>
-            <input type="file" onChange={handleFileChange} />
-
-            <div>{file && `${file.name} - ${file.type}`}</div>
+            <p>Upload project.zip</p>
+            <input 
+            type="file" 
+            onChange={handleProjectZipChange} 
+            accept=".zip"
+            />
+            <div>{projectZip && `${projectZip.name} - ${projectZip.type}`}</div>
+            
+            <br/>
+            <br/>
+            
+            <p>Upload tests.zip</p>
+            <input 
+            type="file" 
+            onChange={handleTestZipChange} 
+            accept=".zip"/>
+            <div>{testZip && `${testZip.name} - ${testZip.type}`}</div>
+            
+            <br/>
 
             <Button variant={theme === 'light' ? "primary" : "dark"} onClick={handleUploadClick}>Upload</Button>
 
