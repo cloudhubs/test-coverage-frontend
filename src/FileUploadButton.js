@@ -50,7 +50,7 @@ const FileUploadButton = (props) => {
         testFormData.append('file', testZip);
 
         //send project zip
-        axios.post("http://localhost:8080/tests/selenium/getAll", projectFormData, {
+        axios.post("http://localhost:8080/tests/swagger/getEndpoints", projectFormData, {
             headers: {
                 'Content-Type': 'multipart/form-data'
               },
