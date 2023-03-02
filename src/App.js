@@ -5,6 +5,7 @@ import MenuBar from './MenuBar'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 import { Data } from "./Data.js";
+//import { Data } from "./FileUploadButton";
 import CoverageChart from "./CoverageChart";
 import {Chart, ArcElement} from 'chart.js';
 

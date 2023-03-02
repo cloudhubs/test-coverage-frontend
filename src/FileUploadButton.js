@@ -1,6 +1,6 @@
 import { ChangeEvent, useState } from 'react';
 import axios from "axios"
-import {Button, Modal} from 'react-bootstrap'
+import {Button, Modal, Tab, Tabs} from 'react-bootstrap'
 
 const FileUploadButton = (props) => {
     const theme = props.theme
@@ -71,7 +71,11 @@ const FileUploadButton = (props) => {
               },
         }).then((res) => {
             console.log(res.data)
-            setResults(res.data)
+            //setResults(res.data)
+            const responseString = res.data.reduce((acc, obj) => {
+                return acc + `${obj.method} ${obj.path}\n`
+            }, '')
+            setResults(responseString)
         }).catch((err) => console.error(err))
     }
 
@@ -104,22 +108,26 @@ const FileUploadButton = (props) => {
                     <Modal.Title>Endpoints Tested</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                  <div style={{ whiteSpace: 'pre'}}>
-                    {results}
-                  </div>
-                    <div style={{ whiteSpace: 'pre'}}>
-                        {projectRes}
-                    </div>
+                    <Tabs
+                        id="controlled-tab"
+                        className="group-01"
+                    >
+                        <Tab eventKey="gatling" title="Gatling">
+                            <div style={{ whiteSpace: 'pre' }}>
+                                {results}
+                            </div>
+                        </Tab>
+                        <Tab eventKey="swagger" title="Swagger">
+                            <div style={{ whiteSpace: 'pre' }}>
+                                {projectRes}
+                            </div>
+                        </Tab>
+                    </Tabs>
                 </Modal.Body>
                 <Modal.Footer>
                     <Button variant="success" onClick={handleClose}>
                       Ok
                     </Button>
-                    <div>
-                    <Button variant="success" onClick={handleClose}>
-                        Test
-                    </Button>
-                    </div>
                 </Modal.Footer>
             </Modal>
         </div>
