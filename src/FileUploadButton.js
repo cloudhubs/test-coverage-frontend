@@ -1,6 +1,7 @@
 import { ChangeEvent, useState } from 'react';
 import axios from "axios"
 import {Button, Modal, Tab, Tabs} from 'react-bootstrap'
+import ClipLoader from "react-spinners/ClipLoader";
 
 const FileUploadButton = (props) => {
     const theme = props.theme
@@ -11,6 +12,8 @@ const FileUploadButton = (props) => {
     const [show, setShow] = useState(false)
     const [results, setResults] = useState('none')
     const [projectRes, setProjectRes] =  useState('none')
+
+    let [loading, setLoading] = useState(false);
 
     const handleProjectZipChange = (e: ChangeEvent<HTMLInputElement>) => {
         if (e.target.files) {
@@ -24,7 +27,6 @@ const FileUploadButton = (props) => {
         }
     };
 
-
     const handleUploadClick = () => {
         if (!projectZip) {
             return;
@@ -32,8 +34,9 @@ const FileUploadButton = (props) => {
         if (!testZip) {
             return;
         }
+        setLoading(true)
         sendFiles()
-        handleShow()
+        //handleShow()
     };
 
     const handleClose = () => setShow(false)
@@ -77,6 +80,8 @@ const FileUploadButton = (props) => {
             }, '')
             setResults(responseString)
         }).catch((err) => console.error(err))
+        setLoading(false)
+        handleShow()
     }
 
     return (
@@ -102,6 +107,13 @@ const FileUploadButton = (props) => {
             <br/>
 
             <Button variant={theme === 'light' ? "primary" : "dark"} onClick={handleUploadClick}>Upload</Button>
+            <ClipLoader
+                color={"blue"}
+                loading={loading}
+                size={18}
+                aria-label="Loading Spinner"
+                data-testid="loader"
+            />
 
             <Modal show={show} onHide={handleClose}>
                 <Modal.Header>
