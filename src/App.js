@@ -4,9 +4,7 @@ import FileUploadButton from './FileUploadButton'
 import MenuBar from './MenuBar'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
-import { Data } from "./Data.js";
-//import { Data } from "./FileUploadButton";
-import CoverageChart from "./CoverageChart";
+//import { Data } from "./Data.js";
 import {Chart, ArcElement} from 'chart.js';
 
 Chart.register(ArcElement);
@@ -45,22 +43,22 @@ export default function App() {
     });
     */
 
-  const chartData = {
-    labels: Data.map((data) => data.year),
-    datasets: [
-      {
-        label: "Users Gained ",
-        data: Data.map((data) => data.total),
-        backgroundColor: [
-          "rgb(54,144,22)",
-          "#e5c649",
-          "#992313",
-        ],
-        borderColor: "black",
-        borderWidth: 2
-      }
-    ]
-  }
+  // const chartData = {
+  //   labels: Data.map((data) => data.year),
+  //   datasets: [
+  //     {
+  //       label: "Users Gained ",
+  //       data: Data.map((data) => data.total),
+  //       backgroundColor: [
+  //         "rgb(54,144,22)",
+  //         "#e5c649",
+  //         "#992313",
+  //       ],
+  //       borderColor: "black",
+  //       borderWidth: 2
+  //     }
+  //   ]
+  // }
   
   return (
     <>
@@ -70,9 +68,6 @@ export default function App() {
       </div>
       <div>
         <FileUploadButton theme={theme}/>
-      </div>  
-      <div style={/*TODO: change to use % */ {width: "400px", height: "400px"}}>
-          <CoverageChart  chartData={chartData} />
       </div>
     </>
   );
