@@ -1,9 +1,10 @@
-import React, { ChangeEvent, useState } from 'react';
+import React, {ChangeEvent, useState} from 'react';
 import axios from "axios"
 import {Button, Modal, Tab, Tabs} from 'react-bootstrap'
 import ClipLoader from "react-spinners/ClipLoader";
-import CoverageChart from "./CoverageChart";
-import NewChart from "./NewChart";
+import {PieChart, Pie, Cell, ResponsiveContainer, Legend} from 'recharts';
+import {pieData, COLORS, renderCustomizedLabel} from "./PieChartComponent";
+import PieChartComponent from "./PieChartComponent";
 
 export let Data = [
     {
@@ -22,6 +23,12 @@ export let Data = [
         total: 1
     }
 ];
+
+let val = pieData.map((entry, index) => (
+        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]}/>
+    ))
+
+let key = 0
 
 export let chartData = {
     labels: Data.map((data) => data.year),
@@ -47,6 +54,7 @@ const FileUploadButton = (props) => {
     const [testZip, setTestZip] = useState();
 
     const [show, setShow] = useState(false)
+    const [showPieChart, setShowPieChart] = useState(false)
     const [results, setResults] = useState('none')
     const [projectRes, setProjectRes] =  useState('none')
 
@@ -77,11 +85,16 @@ const FileUploadButton = (props) => {
     };
 
     const handleClose = () => {
+        key=key+1
         setShow(false)
+        setShowPieChart(true)
     }
 
     const handleShow = () => {
         setShow(true)
+        val = pieData.map((entry, index) => (
+            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]}/>
+        ))
     }
 
     const sendFiles = async() => {
@@ -119,25 +132,6 @@ const FileUploadButton = (props) => {
             }, '')
             setResults(responseString)
         }).catch((err) => console.error(err))
-        //
-        // await axios.post("https://localhost:8080/tests/swagger/getTotal", testFormData, {
-        //     headers: {
-        //         'Content-Type': 'multipart/form-data'
-        //     },
-        // }).then((res) => {
-        //     console.log(res.data)
-        //     Data.at(1).total = res.data
-        // }).catch((err) => console.error(err))
-        //
-        // //get full coverage
-        // await axios.post("https://localhost:8080/tests/coverage/getTotal", testFormData, {
-        //     headers: {
-        //         'Content-Type': 'multipart/form-data'
-        //       },
-        // }).then((res) => {
-        //     console.log(res.data)
-        //     Data.at(1).total = res.data
-        // }).catch((err) => console.error(err))
 
         axios.get(`http://localhost:8080/tests/coverage/getTotal`)
             .then(res => {
@@ -159,6 +153,10 @@ const FileUploadButton = (props) => {
                         }
                     ]
                 }
+                pieData.at(0).value = Data.at(0).total
+                val = pieData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]}/>
+                ))
             }).catch((err) => console.error(err))
 
         axios.get(`http://localhost:8080/tests/coverage/getPartial`)
@@ -181,6 +179,10 @@ const FileUploadButton = (props) => {
                         }
                     ]
                 }
+                pieData.at(1).value = Data.at(1).total
+                val = pieData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]}/>
+                ))
             }).catch((err) => console.error(err))
 
         axios.get(`http://localhost:8080/tests/coverage/getNo`)
@@ -203,6 +205,10 @@ const FileUploadButton = (props) => {
                         }
                     ]
                 }
+                pieData.at(2).value = Data.at(2).total
+                val = pieData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]}/>
+                ))
             }).catch((err) => console.error(err))
 
         setLoading(false)
@@ -210,6 +216,8 @@ const FileUploadButton = (props) => {
 
         setLoading(false)
         handleShow()
+
+        this.forceUpdate()
     }
 
     return (
@@ -243,8 +251,32 @@ const FileUploadButton = (props) => {
                 data-testid="loader"
             />
 
-            <div style={/*TODO: change to use % */ {width: "400px", height: "400px"}}>
-                <NewChart chartData={chartData} />
+            <div key={key}>
+                {showPieChart ?
+                <div className="row d-flex justify-content-left text-center">
+                    <hr/>
+                    <div className="col-md-8">
+                            <ResponsiveContainer width={500} height={500} className="text-center">
+                                <PieChart width={500} height={500}>
+                                    <Legend layout="vertical" verticalAlign="top" align="top"/>
+                                    <Pie
+                                        data={pieData}
+                                        cx="50%"
+                                        cy="50%"
+                                        labelLine={false}
+                                        label={renderCustomizedLabel}
+                                        outerRadius={200}
+                                        fill="#8884d8"
+                                        dataKey="value"
+                                    >
+                                        {val}
+                                    </Pie>
+                                </PieChart>
+                            </ResponsiveContainer>
+                    </div>
+                    <PieChartComponent />
+                </div>
+                : null}
             </div>
 
             <Modal show={show} onHide={handleClose}>
