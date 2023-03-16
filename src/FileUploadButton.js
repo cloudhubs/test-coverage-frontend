@@ -3,21 +3,22 @@ import axios from "axios"
 import {Button, Modal, Tab, Tabs} from 'react-bootstrap'
 import ClipLoader from "react-spinners/ClipLoader";
 import CoverageChart from "./CoverageChart";
+import NewChart from "./NewChart";
 
 export let Data = [
     {
         type: 1,
-        year: "fully",
+        year: "Fully",
         total: 0
     },
     {
         type: 2,
-        year: "partially",
+        year: "Partially",
         total: 0
     },
     {
         type: 3,
-        year: "not",
+        year: "Not",
         total: 1
     }
 ];
@@ -243,7 +244,7 @@ const FileUploadButton = (props) => {
             />
 
             <div style={/*TODO: change to use % */ {width: "400px", height: "400px"}}>
-                <CoverageChart  chartData={chartData} />
+                <NewChart chartData={chartData} />
             </div>
 
             <Modal show={show} onHide={handleClose}>
