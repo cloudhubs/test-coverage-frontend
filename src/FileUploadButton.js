@@ -1,43 +1,11 @@
-import React, { ChangeEvent, useState } from 'react';
+import React, {ChangeEvent, useState} from 'react';
 import axios from "axios"
 import {Button, Modal, Tab, Tabs} from 'react-bootstrap'
 import ClipLoader from "react-spinners/ClipLoader";
-import CoverageChart from "./CoverageChart";
+import {pieData} from "./PieChartComponent";
+import PieChartComponent from "./PieChartComponent";
 
-export let Data = [
-    {
-        type: 1,
-        year: "fully",
-        total: 0
-    },
-    {
-        type: 2,
-        year: "partially",
-        total: 0
-    },
-    {
-        type: 3,
-        year: "not",
-        total: 1
-    }
-];
-
-export let chartData = {
-    labels: Data.map((data) => data.year),
-    datasets: [
-        {
-            label: "Users Gained ",
-            data: Data.map((data) => data.total),
-            backgroundColor: [
-                "rgb(54,144,22)",
-                "#e5c649",
-                "#992313",
-            ],
-            borderColor: "black",
-            borderWidth: 2
-        }
-    ]
-}
+let key = 0
 
 const FileUploadButton = (props) => {
     const theme = props.theme
@@ -46,6 +14,7 @@ const FileUploadButton = (props) => {
     const [testZip, setTestZip] = useState();
 
     const [show, setShow] = useState(false)
+    const [showPieChart, setShowPieChart] = useState(false)
     const [results, setResults] = useState('none')
     const [projectRes, setProjectRes] =  useState('none')
 
@@ -64,6 +33,7 @@ const FileUploadButton = (props) => {
     };
 
     const handleUploadClick = () => {
+        setShowPieChart(false)
         if (!projectZip) {
             return;
         }
@@ -76,7 +46,9 @@ const FileUploadButton = (props) => {
     };
 
     const handleClose = () => {
+        key=key+1
         setShow(false)
+        setShowPieChart(true)
     }
 
     const handleShow = () => {
@@ -118,90 +90,23 @@ const FileUploadButton = (props) => {
             }, '')
             setResults(responseString)
         }).catch((err) => console.error(err))
-        //
-        // await axios.post("https://localhost:8080/tests/swagger/getTotal", testFormData, {
-        //     headers: {
-        //         'Content-Type': 'multipart/form-data'
-        //     },
-        // }).then((res) => {
-        //     console.log(res.data)
-        //     Data.at(1).total = res.data
-        // }).catch((err) => console.error(err))
-        //
-        // //get full coverage
-        // await axios.post("https://localhost:8080/tests/coverage/getTotal", testFormData, {
-        //     headers: {
-        //         'Content-Type': 'multipart/form-data'
-        //       },
-        // }).then((res) => {
-        //     console.log(res.data)
-        //     Data.at(1).total = res.data
-        // }).catch((err) => console.error(err))
 
         axios.get(`http://localhost:8080/tests/coverage/getTotal`)
             .then(res => {
                 console.log(res.data)
-                Data.at(0).total = res.data
-                chartData = {
-                    labels: Data.map((data) => data.year),
-                    datasets: [
-                        {
-                            label: "Users Gained ",
-                            data: Data.map((data) => data.total),
-                            backgroundColor: [
-                                "rgb(54,144,22)",
-                                "#e5c649",
-                                "#992313",
-                            ],
-                            borderColor: "black",
-                            borderWidth: 2
-                        }
-                    ]
-                }
+                pieData.at(0).value = res.data
             }).catch((err) => console.error(err))
 
         axios.get(`http://localhost:8080/tests/coverage/getPartial`)
             .then(res => {
                 console.log(res.data)
-                Data.at(1).total = res.data
-                chartData = {
-                    labels: Data.map((data) => data.year),
-                    datasets: [
-                        {
-                            label: "Users Gained ",
-                            data: Data.map((data) => data.total),
-                            backgroundColor: [
-                                "rgb(54,144,22)",
-                                "#e5c649",
-                                "#992313",
-                            ],
-                            borderColor: "black",
-                            borderWidth: 2
-                        }
-                    ]
-                }
+                pieData.at(1).value = res.data
             }).catch((err) => console.error(err))
 
         axios.get(`http://localhost:8080/tests/coverage/getNo`)
             .then(res => {
                 console.log(res.data)
-                Data.at(2).total = res.data
-                chartData = {
-                    labels: Data.map((data) => data.year),
-                    datasets: [
-                        {
-                            label: "Users Gained ",
-                            data: Data.map((data) => data.total),
-                            backgroundColor: [
-                                "rgb(54,144,22)",
-                                "#e5c649",
-                                "#992313",
-                            ],
-                            borderColor: "black",
-                            borderWidth: 2
-                        }
-                    ]
-                }
+                pieData.at(2).value = res.data
             }).catch((err) => console.error(err))
 
         setLoading(false)
@@ -209,6 +114,8 @@ const FileUploadButton = (props) => {
 
         setLoading(false)
         handleShow()
+
+        this.forceUpdate()
     }
 
     return (
@@ -242,8 +149,10 @@ const FileUploadButton = (props) => {
                 data-testid="loader"
             />
 
-            <div style={/*TODO: change to use % */ {width: "400px", height: "400px"}}>
-                <CoverageChart  chartData={chartData} />
+            <div key={key}>
+                {showPieChart ?
+                    <PieChartComponent />
+                : null}
             </div>
 
             <Modal show={show} onHide={handleClose}>
