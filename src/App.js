@@ -6,8 +6,6 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 //import { Data } from "./Data.js";
 import {Chart, ArcElement} from 'chart.js';
-import { PieChart, Pie, Cell, Tooltip, Legend } from "recharts";
-
 
 Chart.register(ArcElement);
 
