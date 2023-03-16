@@ -31,8 +31,8 @@ let PieChartComponent = () => {
                 <div class="row d-flex justify-content-left text-center">
                     <hr />
                     <div className="col-md-8">
-                        <ResponsiveContainer width={400} height={400} className="text-center">
-                            <PieChart width={400} height={400}>
+                        <ResponsiveContainer width={500} height={500} className="text-center">
+                            <PieChart width={500} height={500}>
                                 <Legend layout="vertical" verticalAlign="top" align="top" />
                                 <Pie
                                     data={pieData}
@@ -40,7 +40,7 @@ let PieChartComponent = () => {
                                     cy="50%"
                                     labelLine={false}
                                     label={renderCustomizedLabel}
-                                    outerRadius={80}
+                                    outerRadius={200}
                                     fill="#8884d8"
                                     dataKey="value"
                                 >
