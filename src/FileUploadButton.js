@@ -4,6 +4,9 @@ import {Button, Modal, Tab, Tabs} from 'react-bootstrap'
 import ClipLoader from "react-spinners/ClipLoader";
 import {pieData} from "./PieChartComponent";
 import PieChartComponent from "./PieChartComponent";
+import Container from 'react-bootstrap/Container';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
 
 let key = 0
 
@@ -149,11 +152,61 @@ const FileUploadButton = (props) => {
                 data-testid="loader"
             />
 
-            <div key={key}>
-                {showPieChart ?
-                    <PieChartComponent />
-                : null}
-            </div>
+            {/*<div key={key}>*/}
+            {/*    {showPieChart ?*/}
+            {/*        <PieChartComponent />*/}
+            {/*    : null}*/}
+            {/*</div>*/}
+
+            <Container fluid>
+                <Row>
+                    <Col>
+                        <div key={key} style={{width: "33%"}}>
+                            {showPieChart ?
+                                <h3>Total Coverage</h3>
+                                : null}
+                            {showPieChart ?
+                                <PieChartComponent />
+                            : null}
+                            {showPieChart ?
+                                <div style={{width: "33%"}}>
+                                    {projectRes}
+                                </div>
+                                : null}
+                        </div>
+                    </Col>
+                    <Col>
+                        <div key={key} style={{width: "33%"}}>
+                            {showPieChart ?
+                                <h3>Gatling</h3>
+                                : null}
+                            {showPieChart ?
+                                <PieChartComponent />
+                                : null}
+                            {showPieChart ?
+                                <div style={{width: "33%"}}>
+                                    {projectRes}
+                                </div>
+                                : null}
+                        </div>
+                    </Col>
+                    <Col>
+                        <div key={key} style={{width: "33%"}}>
+                            {showPieChart ?
+                                <h3>Selenium</h3>
+                                : null}
+                            {showPieChart ?
+                                <PieChartComponent />
+                                : null}
+                            {showPieChart ?
+                                <div style={{width: "33%"}}>
+                                    {projectRes}
+                                </div>
+                                : null}
+                        </div>
+                    </Col>
+                </Row>
+            </Container>
 
             <Modal show={show} onHide={handleClose}>
                 <Modal.Header>
