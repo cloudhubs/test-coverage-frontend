@@ -12,6 +12,8 @@ let key = 0
 
 const FileUploadButton = (props) => {
     const theme = props.theme
+    const widthNum = window.innerWidth / 3 - 100
+    const width = widthNum.toString() + "px"
 
     const [projectZip, setProjectZip] = useState();
     const [testZip, setTestZip] = useState();
@@ -157,11 +159,14 @@ const FileUploadButton = (props) => {
             {/*        <PieChartComponent />*/}
             {/*    : null}*/}
             {/*</div>*/}
+            <div>
+                {width}
+            </div>
 
             <Container fluid>
                 <Row>
                     <Col>
-                        <div key={key} style={{width: "33%"}}>
+                        <div key={key} style={{maxWidth: "380px", whiteSpace: 'pre'}}>
                             {showPieChart ?
                                 <h3>Total Coverage</h3>
                                 : null}
@@ -169,14 +174,14 @@ const FileUploadButton = (props) => {
                                 <PieChartComponent />
                             : null}
                             {showPieChart ?
-                                <div style={{width: "33%"}}>
+                                <div style={{maxWidth: "380px", whiteSpace: 'pre'}}>
                                     {projectRes}
                                 </div>
                                 : null}
                         </div>
                     </Col>
                     <Col>
-                        <div key={key} style={{width: "33%"}}>
+                        <div key={key} style={{maxWidth: "380px", whiteSpace: 'pre'}}>
                             {showPieChart ?
                                 <h3>Gatling</h3>
                                 : null}
@@ -184,14 +189,14 @@ const FileUploadButton = (props) => {
                                 <PieChartComponent />
                                 : null}
                             {showPieChart ?
-                                <div style={{width: "33%"}}>
-                                    {projectRes}
+                                <div style={{maxWidth: "380px", whiteSpace: 'pre'}}>
+                                    {results}
                                 </div>
                                 : null}
                         </div>
                     </Col>
                     <Col>
-                        <div key={key} style={{width: "33%"}}>
+                        <div key={key} style={{maxWidth: "380px", whiteSpace: 'pre'}}>
                             {showPieChart ?
                                 <h3>Selenium</h3>
                                 : null}
@@ -199,7 +204,7 @@ const FileUploadButton = (props) => {
                                 <PieChartComponent />
                                 : null}
                             {showPieChart ?
-                                <div style={{width: "33%"}}>
+                                <div style={{maxWidth: "380px", whiteSpace: 'pre'}}>
                                     {projectRes}
                                 </div>
                                 : null}
