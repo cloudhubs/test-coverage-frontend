@@ -32,6 +32,10 @@ const FileUploadButton = (props) => {
         return new Promise( res => setTimeout(res, delay) );
     }
 
+    async function getSwaggerEndpoints() {
+
+    }
+
     const handleProjectZipChange = (e: ChangeEvent<HTMLInputElement>) => {
         if (e.target.files) {
             setProjectZip(e.target.files[0]);
@@ -64,7 +68,7 @@ const FileUploadButton = (props) => {
     }
 
     const handleShow = async() => {
-        await timeout(3000);
+        // await timeout(3000);
         // setShow(true)
         setLoading(false)
         key=key+1
@@ -122,48 +126,48 @@ const FileUploadButton = (props) => {
         //     setSeleniumRes(responseString)
         // }).catch((err) => console.error(err))
 
-        axios.get(`http://localhost:8080/tests/coverage/getTotal`)
+        await axios.get(`http://localhost:8080/tests/coverage/getTotal`)
             .then(res => {
                 console.log(res.data)
                 pieData.at(0).value = res.data
             }).catch((err) => console.error(err))
 
-        axios.get(`http://localhost:8080/tests/coverage/getPartial`)
+        await axios.get(`http://localhost:8080/tests/coverage/getPartial`)
             .then(res => {
                 console.log(res.data)
                 pieData.at(1).value = res.data
                 // gatlingData.at(0).value = res.data
             }).catch((err) => console.error(err))
 
-        axios.get(`http://localhost:8080/tests/coverage/getNo`)
+        await axios.get(`http://localhost:8080/tests/coverage/getNo`)
             .then(res => {
                 console.log(res.data)
                 pieData.at(2).value = res.data
                 // gatlingData.at(1).value = res.data
             }).catch((err) => console.error(err))
 
-        axios.get(`http://localhost:8080/tests/coverage/getGatlingCovered`)
+        await axios.get(`http://localhost:8080/tests/coverage/getGatlingCovered`)
             .then(res => {
                 console.log(res.data)
                 // pieData.at(2).value = res.data
                 gatlingData.at(0).value = res.data
             }).catch((err) => console.error(err))
 
-        axios.get(`http://localhost:8080/tests/coverage/getGatlingUncovered`)
+        await axios.get(`http://localhost:8080/tests/coverage/getGatlingUncovered`)
             .then(res => {
                 console.log(res.data)
                 // pieData.at(2).value = res.data
                 gatlingData.at(1).value = res.data
             }).catch((err) => console.error(err))
 
-        axios.get(`http://localhost:8080/tests/coverage/getSeleniumCovered`)
+        await axios.get(`http://localhost:8080/tests/coverage/getSeleniumCovered`)
             .then(res => {
                 console.log(res.data)
                 // pieData.at(2).value = res.data
                 seleniumData.at(0).value = res.data
             }).catch((err) => console.error(err))
 
-        axios.get(`http://localhost:8080/tests/coverage/getSeleniumUncovered`)
+        await axios.get(`http://localhost:8080/tests/coverage/getSeleniumUncovered`)
             .then(res => {
                 console.log(res.data)
                 // pieData.at(2).value = res.data
