@@ -8,14 +8,14 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import GatlingPieChart, {gatlingData} from "./GatlingPieChart";
-import SeleniumPieChart from "./SeleniumPieChart";
+import SeleniumPieChart, {seleniumData} from "./SeleniumPieChart";
 
 let key = 0
 
 const FileUploadButton = (props) => {
     const theme = props.theme
-    const widthNum = window.innerWidth / 3 - 100
-    const width = widthNum.toString() + "px"
+    // const widthNum = window.innerWidth / 3 - 100
+    // const width = widthNum.toString() + "px"
 
     const [projectZip, setProjectZip] = useState();
     const [testZip, setTestZip] = useState();
@@ -27,6 +27,10 @@ const FileUploadButton = (props) => {
     const [seleniumRes, setSeleniumRes] =  useState('')
 
     let [loading, setLoading] = useState(false);
+
+    function timeout(delay) {
+        return new Promise( res => setTimeout(res, delay) );
+    }
 
     const handleProjectZipChange = (e: ChangeEvent<HTMLInputElement>) => {
         if (e.target.files) {
@@ -59,8 +63,14 @@ const FileUploadButton = (props) => {
         setShowPieChart(true)
     }
 
-    const handleShow = () => {
-        setShow(true)
+    const handleShow = async() => {
+        await timeout(3000);
+        // setShow(true)
+        setLoading(false)
+        key=key+1
+        setShowPieChart(true)
+        //key=key+1
+        //setShowPieChart(true)
     }
 
     const sendFiles = async() => {
@@ -99,6 +109,19 @@ const FileUploadButton = (props) => {
             setResults(responseString)
         }).catch((err) => console.error(err))
 
+        // await axios.post("http://localhost:8080/tests/selenium/getAll", testFormData, {
+        //     headers: {
+        //         'Content-Type': 'multipart/form-data'
+        //     },
+        // }).then((res) => {
+        //     console.log(res.data)
+        //     //setResults(res.data)
+        //     const responseString = res.data.reduce((acc, obj) => {
+        //         return acc + `${obj.method} ${obj.path}\n`
+        //     }, '')
+        //     setSeleniumRes(responseString)
+        // }).catch((err) => console.error(err))
+
         axios.get(`http://localhost:8080/tests/coverage/getTotal`)
             .then(res => {
                 console.log(res.data)
@@ -109,21 +132,52 @@ const FileUploadButton = (props) => {
             .then(res => {
                 console.log(res.data)
                 pieData.at(1).value = res.data
-                gatlingData.at(0).value = res.data
+                // gatlingData.at(0).value = res.data
             }).catch((err) => console.error(err))
 
         axios.get(`http://localhost:8080/tests/coverage/getNo`)
             .then(res => {
                 console.log(res.data)
                 pieData.at(2).value = res.data
+                // gatlingData.at(1).value = res.data
+            }).catch((err) => console.error(err))
+
+        axios.get(`http://localhost:8080/tests/coverage/getGatlingCovered`)
+            .then(res => {
+                console.log(res.data)
+                // pieData.at(2).value = res.data
+                gatlingData.at(0).value = res.data
+            }).catch((err) => console.error(err))
+
+        axios.get(`http://localhost:8080/tests/coverage/getGatlingUncovered`)
+            .then(res => {
+                console.log(res.data)
+                // pieData.at(2).value = res.data
                 gatlingData.at(1).value = res.data
             }).catch((err) => console.error(err))
 
-        setLoading(false)
+        axios.get(`http://localhost:8080/tests/coverage/getSeleniumCovered`)
+            .then(res => {
+                console.log(res.data)
+                // pieData.at(2).value = res.data
+                seleniumData.at(0).value = res.data
+            }).catch((err) => console.error(err))
+
+        axios.get(`http://localhost:8080/tests/coverage/getSeleniumUncovered`)
+            .then(res => {
+                console.log(res.data)
+                // pieData.at(2).value = res.data
+                seleniumData.at(1).value = res.data
+            }).catch((err) => console.error(err))
+
+        // setLoading(false)
         handleShow()
 
-        setLoading(false)
+        // setLoading(false)
         handleShow()
+
+        // setShow(false)
+        // await timeout(1000);
 
         this.forceUpdate()
     }
@@ -159,12 +213,6 @@ const FileUploadButton = (props) => {
                 data-testid="loader"
             />
 
-            {/*<div key={key}>*/}
-            {/*    {showPieChart ?*/}
-            {/*        <PieChartComponent />*/}
-            {/*    : null}*/}
-            {/*</div>*/}
-
             <Container fluid>
                 <Row>
                     <Col>
@@ -177,7 +225,7 @@ const FileUploadButton = (props) => {
                             : null}
                             {showPieChart ?
                                 <div style={{maxWidth: "380px", whiteSpace: 'pre'}}>
-                                    <textarea cols="50" rows={projectRes.split(/\r\n|\r|\n/).length}>{projectRes}</textarea>
+                                    <textarea cols="50" readOnly="true" rows={projectRes.split(/\r\n|\r|\n/).length}>{projectRes}</textarea>
                                 </div>
                                 : null}
                         </div>
@@ -192,7 +240,7 @@ const FileUploadButton = (props) => {
                                 : null}
                             {showPieChart ?
                                 <div style={{maxWidth: "380px", whiteSpace: 'pre'}}>
-                                    <textarea cols="50" rows={results.split(/\r\n|\r|\n/).length}>{results}</textarea>
+                                    <textarea cols="50" readOnly="true" rows={results.split(/\r\n|\r|\n/).length}>{results}</textarea>
                                 </div>
                                 : null}
                         </div>
@@ -207,7 +255,7 @@ const FileUploadButton = (props) => {
                                 : null}
                             {showPieChart ?
                                 <div style={{maxWidth: "380px", whiteSpace: 'pre'}}>
-                                    <textarea cols="50" rows={seleniumRes.split(/\r\n|\r|\n/).length}>{seleniumRes}</textarea>
+                                    <textarea cols="50" readOnly="true" rows={seleniumRes.split(/\r\n|\r|\n/).length}>{seleniumRes}</textarea>
                                 </div>
                                 : null}
                         </div>
@@ -232,6 +280,11 @@ const FileUploadButton = (props) => {
                         <Tab eventKey="swagger" title="Swagger">
                             <div style={{ whiteSpace: 'pre' }}>
                                 {projectRes}
+                            </div>
+                        </Tab>
+                        <Tab eventKey="selenium" title="Selenium">
+                            <div style={{ whiteSpace: 'pre' }}>
+                                {seleniumRes}
                             </div>
                         </Tab>
                     </Tabs>
