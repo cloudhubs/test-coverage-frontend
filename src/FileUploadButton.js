@@ -7,6 +7,8 @@ import PieChartComponent from "./PieChartComponent";
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+import GatlingPieChart, {gatlingData} from "./GatlingPieChart";
+import SeleniumPieChart from "./SeleniumPieChart";
 
 let key = 0
 
@@ -22,6 +24,7 @@ const FileUploadButton = (props) => {
     const [showPieChart, setShowPieChart] = useState(false)
     const [results, setResults] = useState('none')
     const [projectRes, setProjectRes] =  useState('none')
+    const [seleniumRes, setSeleniumRes] =  useState('')
 
     let [loading, setLoading] = useState(false);
 
@@ -106,12 +109,14 @@ const FileUploadButton = (props) => {
             .then(res => {
                 console.log(res.data)
                 pieData.at(1).value = res.data
+                gatlingData.at(0).value = res.data
             }).catch((err) => console.error(err))
 
         axios.get(`http://localhost:8080/tests/coverage/getNo`)
             .then(res => {
                 console.log(res.data)
                 pieData.at(2).value = res.data
+                gatlingData.at(1).value = res.data
             }).catch((err) => console.error(err))
 
         setLoading(false)
@@ -160,7 +165,7 @@ const FileUploadButton = (props) => {
             {/*    : null}*/}
             {/*</div>*/}
             <div>
-                {width}
+
             </div>
 
             <Container fluid>
@@ -186,7 +191,7 @@ const FileUploadButton = (props) => {
                                 <h3>Gatling</h3>
                                 : null}
                             {showPieChart ?
-                                <PieChartComponent />
+                                <GatlingPieChart />
                                 : null}
                             {showPieChart ?
                                 <div style={{maxWidth: "380px", whiteSpace: 'pre'}}>
@@ -201,11 +206,11 @@ const FileUploadButton = (props) => {
                                 <h3>Selenium</h3>
                                 : null}
                             {showPieChart ?
-                                <PieChartComponent />
+                                <SeleniumPieChart />
                                 : null}
                             {showPieChart ?
                                 <div style={{maxWidth: "380px", whiteSpace: 'pre'}}>
-                                    {projectRes}
+                                    {seleniumRes}
                                 </div>
                                 : null}
                         </div>
