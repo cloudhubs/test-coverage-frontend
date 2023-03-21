@@ -28,6 +28,14 @@ const FileUploadButton = (props) => {
 
     let [loading, setLoading] = useState(false);
 
+    const [fullSwagger, setFullSwagger] = useState('')
+    const [partialSwagger, setPartialSwagger] = useState('')
+    const [noSwagger, setNoSwagger] = useState('')
+    const [fullGatling, setFullGatling] = useState('')
+    const [noGatling, setNoGatling] = useState('')
+    const [fullSelenium, setFullSelenium] = useState('')
+    const [noSelenium, setNoSelenium] = useState('')
+
     const handleProjectZipChange = (e: ChangeEvent<HTMLInputElement>) => {
         if (e.target.files) {
             setProjectZip(e.target.files[0]);
@@ -167,6 +175,76 @@ const FileUploadButton = (props) => {
                 seleniumData.at(1).value = res.data
             }).catch((err) => console.error(err))
 
+        await axios.get("http://localhost:8080/tests/coverage/getFullSwagger")
+            .then((res) => {
+                console.log(res.data)
+                //setResults(res.data)
+                const responseString = res.data.reduce((acc, obj) => {
+                    return acc + `${obj}\n`
+                }, '')
+                setFullSwagger(responseString)
+            }).catch((err) => console.error(err))
+
+        await axios.get("http://localhost:8080/tests/coverage/getPartialSwagger")
+            .then((res) => {
+            console.log(res.data)
+            //setResults(res.data)
+            const responseString = res.data.reduce((acc, obj) => {
+                return acc + `${obj}\n`
+            }, '')
+            setPartialSwagger(responseString)
+        }).catch((err) => console.error(err))
+
+        await axios.get("http://localhost:8080/tests/coverage/getNoSwagger")
+            .then((res) => {
+                console.log(res.data)
+                //setResults(res.data)
+                const responseString = res.data.reduce((acc, obj) => {
+                    return acc + `${obj}\n`
+                }, '')
+                setNoSwagger(responseString)
+            }).catch((err) => console.error(err))
+
+        await axios.get("http://localhost:8080/tests/coverage/getFullGatling")
+            .then((res) => {
+                console.log(res.data)
+                //setResults(res.data)
+                const responseString = res.data.reduce((acc, obj) => {
+                    return acc + `${obj}\n`
+                }, '')
+                setFullGatling(responseString)
+            }).catch((err) => console.error(err))
+
+        await axios.get("http://localhost:8080/tests/coverage/getNoGatling")
+            .then((res) => {
+                console.log(res.data)
+                //setResults(res.data)
+                const responseString = res.data.reduce((acc, obj) => {
+                    return acc + `${obj}\n`
+                }, '')
+                setNoGatling(responseString)
+            }).catch((err) => console.error(err))
+
+        await axios.get("http://localhost:8080/tests/coverage/getFullSelenium")
+            .then((res) => {
+                console.log(res.data)
+                //setResults(res.data)
+                const responseString = res.data.reduce((acc, obj) => {
+                    return acc + `${obj}\n`
+                }, '')
+                setFullSelenium(responseString)
+            }).catch((err) => console.error(err))
+
+        await axios.get("http://localhost:8080/tests/coverage/getNoSelenium")
+            .then((res) => {
+                console.log(res.data)
+                //setResults(res.data)
+                const responseString = res.data.reduce((acc, obj) => {
+                    return acc + `${obj}\n`
+                }, '')
+                setNoSelenium(responseString)
+            }).catch((err) => console.error(err))
+
         // setLoading(false)
         handleShow()
 
@@ -222,7 +300,17 @@ const FileUploadButton = (props) => {
                             : null}
                             {showPieChart ?
                                 <div style={{maxWidth: "380px", whiteSpace: 'pre'}}>
-                                    <textarea cols="50" readOnly="true" rows={projectRes.split(/\r\n|\r|\n/).length}>{projectRes}</textarea>
+                                    <textarea style={{color: "green"}} cols="50" readOnly="true" rows={fullSwagger.split(/\r\n|\r|\n/).length}>{fullSwagger}</textarea>
+                                </div>
+                                : null}
+                            {showPieChart ?
+                                <div style={{maxWidth: "380px", whiteSpace: 'pre'}}>
+                                    <textarea style={{color: "gold"}} cols="50" readOnly="true" rows={partialSwagger.split(/\r\n|\r|\n/).length}>{partialSwagger}</textarea>
+                                </div>
+                                : null}
+                            {showPieChart ?
+                                <div style={{maxWidth: "380px", whiteSpace: 'pre'}}>
+                                    <textarea style={{color: "red"}} cols="50" readOnly="true" rows={noSwagger.split(/\r\n|\r|\n/).length}>{noSwagger}</textarea>
                                 </div>
                                 : null}
                         </div>
@@ -237,7 +325,12 @@ const FileUploadButton = (props) => {
                                 : null}
                             {showPieChart ?
                                 <div style={{maxWidth: "380px", whiteSpace: 'pre'}}>
-                                    <textarea cols="50" readOnly="true" rows={results.split(/\r\n|\r|\n/).length}>{results}</textarea>
+                                    <textarea style={{color: "green"}} cols="50" readOnly="true" rows={fullGatling.split(/\r\n|\r|\n/).length}>{fullGatling}</textarea>
+                                </div>
+                                : null}
+                            {showPieChart ?
+                                <div style={{maxWidth: "380px", whiteSpace: 'pre'}}>
+                                    <textarea style={{color: "red"}} cols="50" readOnly="true" rows={noGatling.split(/\r\n|\r|\n/).length}>{noGatling}</textarea>
                                 </div>
                                 : null}
                         </div>
@@ -252,7 +345,12 @@ const FileUploadButton = (props) => {
                                 : null}
                             {showPieChart ?
                                 <div style={{maxWidth: "380px", whiteSpace: 'pre'}}>
-                                    <textarea cols="50" readOnly="true" rows={seleniumRes.split(/\r\n|\r|\n/).length}>{seleniumRes}</textarea>
+                                    <textarea style={{color: "green"}} cols="50" readOnly="true" rows={fullSelenium.split(/\r\n|\r|\n/).length}>{fullSelenium}</textarea>
+                                </div>
+                                : null}
+                            {showPieChart ?
+                                <div style={{maxWidth: "380px", whiteSpace: 'pre'}}>
+                                    <textarea style={{color: "red"}} cols="50" readOnly="true" rows={noSelenium.split(/\r\n|\r|\n/).length}>{noSelenium}</textarea>
                                 </div>
                                 : null}
                         </div>
