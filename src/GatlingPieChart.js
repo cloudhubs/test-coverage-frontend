@@ -1,13 +1,12 @@
 import React from "react";
 import { PieChart, Pie, Legend, Cell, ResponsiveContainer } from 'recharts';
 
-export let pieData = [
+export let gatlingData = [
     { name: 'Fully', value: 0 },
-    { name: 'Partially', value: 0 },
     { name: 'Not', value: 1 },
 ];
 
-export const COLORS = ['#2fd91d', '#e1b014', '#ce1212'];
+export const COLORS = ['#2fd91d', '#ce1212'];
 
 export const RADIAN = Math.PI / 180;
 
@@ -23,7 +22,7 @@ export const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadi
     );
 };
 
-let PieChartComponent = () => {
+let GatlingPieChart = () => {
 
     return (
         <>
@@ -35,7 +34,7 @@ let PieChartComponent = () => {
                             <PieChart width={window.innerWidth / 3 - 100} height={window.innerWidth / 3 - 100}>
                                 <Legend layout="vertical" verticalAlign="top" align="top" />
                                 <Pie
-                                    data={pieData}
+                                    data={gatlingData}
                                     cx="50%"
                                     cy="50%"
                                     labelLine={false}
@@ -44,7 +43,7 @@ let PieChartComponent = () => {
                                     fill="#8884d8"
                                     dataKey="value"
                                 >
-                                    {pieData.map((entry, index) => (
+                                    {gatlingData.map((entry, index) => (
                                         <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                                     ))}
                                 </Pie>
@@ -56,4 +55,4 @@ let PieChartComponent = () => {
         </>
     )
 }
-export default PieChartComponent;
+export default GatlingPieChart;
