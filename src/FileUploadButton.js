@@ -164,9 +164,6 @@ const FileUploadButton = (props) => {
             {/*        <PieChartComponent />*/}
             {/*    : null}*/}
             {/*</div>*/}
-            <div>
-
-            </div>
 
             <Container fluid>
                 <Row>
@@ -180,7 +177,7 @@ const FileUploadButton = (props) => {
                             : null}
                             {showPieChart ?
                                 <div style={{maxWidth: "380px", whiteSpace: 'pre'}}>
-                                    {projectRes}
+                                    <textarea cols="50" rows={projectRes.split(/\r\n|\r|\n/).length}>{projectRes}</textarea>
                                 </div>
                                 : null}
                         </div>
@@ -195,7 +192,7 @@ const FileUploadButton = (props) => {
                                 : null}
                             {showPieChart ?
                                 <div style={{maxWidth: "380px", whiteSpace: 'pre'}}>
-                                    {results}
+                                    <textarea cols="50" rows={results.split(/\r\n|\r|\n/).length}>{results}</textarea>
                                 </div>
                                 : null}
                         </div>
@@ -210,7 +207,7 @@ const FileUploadButton = (props) => {
                                 : null}
                             {showPieChart ?
                                 <div style={{maxWidth: "380px", whiteSpace: 'pre'}}>
-                                    {seleniumRes}
+                                    <textarea cols="50" rows={seleniumRes.split(/\r\n|\r|\n/).length}>{seleniumRes}</textarea>
                                 </div>
                                 : null}
                         </div>
