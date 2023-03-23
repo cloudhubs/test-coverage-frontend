@@ -124,7 +124,7 @@ const FileUploadButton = (props) => {
         //         return acc + `${obj.method} ${obj.path}\n`
         //     }, '')
         //     setSeleniumRes(responseString)
-        setSeleniumRes(seleniumRes)
+        setSeleniumRes('')
         // }).catch((err) => console.error(err))
 
         await axios.get(`http://localhost:8080/tests/coverage/getPartial`)
