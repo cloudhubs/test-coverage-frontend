@@ -9,6 +9,7 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import GatlingPieChart, {gatlingData} from "./GatlingPieChart";
 import SeleniumPieChart, {seleniumData} from "./SeleniumPieChart";
+import RegexInput from "./RegexInput";
 
 let key = 0
 
@@ -36,6 +37,16 @@ const FileUploadButton = (props) => {
     const [fullSelenium, setFullSelenium] = useState('')
     const [noSelenium, setNoSelenium] = useState('')
 
+    const [showField, setShowField] = useState(false)
+    const [showRegex, setShowRegex] = useState(false)
+    const [field, setField] = useState('')
+    const [fieldError, setFieldError] = useState('')
+    const [regex, setRegex] = useState([''])
+    const maxRegex = 10;
+    const [regexErrorText, setRegexErrorText] = useState('')
+
+    const fieldPrompt = "Field:  "
+
     const handleProjectZipChange = (e: ChangeEvent<HTMLInputElement>) => {
         if (e.target.files) {
             setProjectZip(e.target.files[0]);
@@ -56,8 +67,11 @@ const FileUploadButton = (props) => {
         if (!testZip) {
             return;
         }
-        setLoading(true)
-        sendFiles()
+        setField('')
+        setShowField(true)
+        setRegex([''])
+        // setLoading(true)
+        // sendFiles()
         //handleShow()
     };
 
@@ -65,6 +79,48 @@ const FileUploadButton = (props) => {
         key=key+1
         setShow(false)
         setShowPieChart(true)
+    }
+
+    const handleFieldClose = () => {
+        key=key+1
+        setShowField(false)
+        setShowRegex(false)
+    }
+
+    const handleNext = () => {
+        if (field === '') {
+            setFieldError('* Field is required *')
+            return;
+        }
+        setRegexErrorText('')
+        setFieldError('')
+        setShowRegex(true)
+        setShowField(false)
+    }
+
+    const handlePrev = () => {
+        setShowField(true)
+        setShowRegex(false)
+    }
+
+    const handleDone = () => {
+        if (regex.length === 0) {
+            return;
+        }
+        let i =0;
+        setRegexErrorText('')
+        while (i < regex.length) {
+            if (regex[i] === '') {
+                setRegexErrorText("* No entries may be left blank *")
+                return;
+            }
+            i++;
+        }
+
+        setShowRegex(false)
+        setShowPieChart(false)
+        setLoading(true)
+        sendFiles()
     }
 
     const handleShow = async() => {
@@ -76,6 +132,43 @@ const FileUploadButton = (props) => {
         //key=key+1
         //setShowPieChart(true)
     }
+
+    const handleFieldChange = (event) => {
+        setField(event.target.value)
+        if (field.length > 0) {
+            setFieldError('')
+        }
+    }
+
+    const handleAdd = (event) => {
+        event.preventDefault()
+        const values = [...regex];
+        values.push('');
+        setRegex(values);
+    };
+
+    const handleDelete = (event, index) => {
+        const values = [...regex];
+        values.splice(index, 1);
+        setRegex(values)
+    };
+
+    const handleRegexChange = (event, index) => {
+        const values = [...regex];
+        values[index] = event.target.value
+        setRegex(values)
+        let i =0;
+        if (regexErrorText !== '') {
+            setRegexErrorText('')
+            while (i < regex.length) {
+                if (regex[i] === '') {
+                    setRegexErrorText("* No entries may be left blank *")
+                    return;
+                }
+                i++;
+            }
+        }
+    };
 
     const sendFiles = async() => {
         //send file to backend to get the results
@@ -126,6 +219,17 @@ const FileUploadButton = (props) => {
         //     setSeleniumRes(responseString)
         setSeleniumRes('')
         // }).catch((err) => console.error(err))
+
+        await axios.post("http://localhost:8080/requests/logs/field", {field: field})
+            .then((response) => {
+            console.log(response);
+        });
+            // .catch((err) => console.error(err))
+
+        await axios.post("http://localhost:8080/requests/logs/regexList", regex)
+            .then((response) => {
+                console.log(response);
+            });
 
         await axios.get(`http://localhost:8080/tests/coverage/getPartial`)
             .then(res => {
@@ -192,7 +296,7 @@ const FileUploadButton = (props) => {
             const responseString = res.data.reduce((acc, obj) => {
                 return acc + `${obj}\n`
             }, '')
-            setPartialSwagger(responseString)
+            setPartialSwagger(responseString);
         }).catch((err) => console.error(err))
 
         await axios.get("http://localhost:8080/tests/coverage/getNoSwagger")
@@ -202,7 +306,7 @@ const FileUploadButton = (props) => {
                 const responseString = res.data.reduce((acc, obj) => {
                     return acc + `${obj}\n`
                 }, '')
-                setNoSwagger(responseString)
+                setNoSwagger(responseString);
             }).catch((err) => console.error(err))
 
         await axios.get("http://localhost:8080/tests/coverage/getFullGatling")
@@ -212,7 +316,7 @@ const FileUploadButton = (props) => {
                 const responseString = res.data.reduce((acc, obj) => {
                     return acc + `${obj}\n`
                 }, '')
-                setFullGatling(responseString)
+                setFullGatling(responseString);
             }).catch((err) => console.error(err))
 
         await axios.get("http://localhost:8080/tests/coverage/getNoGatling")
@@ -222,7 +326,7 @@ const FileUploadButton = (props) => {
                 const responseString = res.data.reduce((acc, obj) => {
                     return acc + `${obj}\n`
                 }, '')
-                setNoGatling(responseString)
+                setNoGatling(responseString);
             }).catch((err) => console.error(err))
 
         await axios.get("http://localhost:8080/tests/coverage/getFullSelenium")
@@ -232,7 +336,7 @@ const FileUploadButton = (props) => {
                 const responseString = res.data.reduce((acc, obj) => {
                     return acc + `${obj}\n`
                 }, '')
-                setFullSelenium(responseString)
+                setFullSelenium(responseString);
             }).catch((err) => console.error(err))
 
         await axios.get("http://localhost:8080/tests/coverage/getNoSelenium")
@@ -242,7 +346,7 @@ const FileUploadButton = (props) => {
                 const responseString = res.data.reduce((acc, obj) => {
                     return acc + `${obj}\n`
                 }, '')
-                setNoSelenium(responseString)
+                setNoSelenium(responseString);
             }).catch((err) => console.error(err))
 
         // setLoading(false)
@@ -287,6 +391,11 @@ const FileUploadButton = (props) => {
                 aria-label="Loading Spinner"
                 data-testid="loader"
             />
+            {/*<div>*/}
+            {/*    {regex.map((current) =>*/}
+            {/*        <div>{current}</div>*/}
+            {/*    )}*/}
+            {/*</div>*/}
 
             <Container fluid>
                 <Row>
@@ -357,6 +466,97 @@ const FileUploadButton = (props) => {
                     </Col>
                 </Row>
             </Container>
+
+            <Modal show={showField} onHide={handleFieldClose}>
+                <Modal.Header>
+                    <Modal.Title>Selenium Field</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <form>
+                        <label>
+                            {fieldPrompt}
+                            {/*<textarea value={field} onChange={handleFieldChange}></textarea>*/}
+                            <input value={field} onChange={handleFieldChange}/>
+                        </label>
+                    </form>
+
+                    <div>
+                        <h8 style={{ color: 'red' }}>{fieldError}</h8>
+                    </div>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={handleFieldClose}>
+                        Cancel
+                    </Button>
+                    <Button variant="primary" onClick={handleNext}>
+                        Next
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+
+            <Modal show={showRegex} onHide={handleFieldClose}>
+                <Modal.Header>
+                    <Modal.Title>Selenium Field</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <form>
+                        {/*<label>*/}
+                        {/*    {fieldPrompt}*/}
+                        {/*    test*/}
+                        {/*    <textarea value={field} onChange={handleFieldChange}></textarea>*/}
+                        {/*    <input value={field} onChange={handleFieldChange}/>*/}
+                        {/*</label>*/}
+                        {regex.map((obj, index) => (
+                            <div className="whole-input">
+                                <div className="input-box">
+                                    <RegexInput
+                                        key = {index}
+                                        objValue={obj.toString()}
+                                        onChange={handleRegexChange}
+                                        index={index}
+                                        deleteField={handleDelete}
+                                        regex={regex}
+                                    />
+                                </div>
+                                <div className="error-text">
+                                    {/*{regexErrorText[index]}*/}
+                                    {/*<h8 style={{ color: 'red' }}>{regexErrorText}</h8>*/}
+                                </div>
+                            </div>
+                        ))}
+                        <h8 style={{ color: 'red' }}>{regexErrorText}</h8>
+                    </form>
+
+                    <div>
+                        {/*{regex.toString()}*/}
+                        {/*{regex.map((current) =>*/}
+                        {/*    <div>*/}
+                        {/*        <input value={current} onChange={handleRegexChange}/>*/}
+                        {/*        <Button variant="danger" onClick={handleDelete} disabled={regex.length <= 1}>*/}
+                        {/*            Delete*/}
+                        {/*        </Button>*/}
+                        {/*    </div>*/}
+                        {/*)}*/}
+                    </div>
+
+
+
+                    <Button variant="warning" disabled={regex.length >= maxRegex} onClick={handleAdd}>
+                        Add
+                    </Button>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={handleFieldClose}>
+                        Cancel
+                    </Button>
+                    <Button variant="primary" onClick={handlePrev}>
+                        Prev
+                    </Button>
+                    <Button variant="success" onClick={handleDone}>
+                        Done
+                    </Button>
+                </Modal.Footer>
+            </Modal>
 
             <Modal show={show} onHide={handleClose}>
                 <Modal.Header>
