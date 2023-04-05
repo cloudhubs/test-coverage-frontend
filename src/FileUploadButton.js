@@ -44,8 +44,6 @@ const FileUploadButton = (props) => {
     const [regex, setRegex] = useState([''])
     const maxRegex = 10;
     const [regexErrorText, setRegexErrorText] = useState('')
-    const percentagePer = 1.0/18.0
-    const [percentage, setPercentage] = useState(0.0)
 
     const fieldPrompt = "Field:  "
 
@@ -160,13 +158,15 @@ const FileUploadButton = (props) => {
         values[index] = event.target.value
         setRegex(values)
         let i =0;
-        setRegexErrorText('')
-        while (i < regex.length) {
-            if (regex[i] === '') {
-                setRegexErrorText("* No entries may be left blank *")
-                return;
+        if (regexErrorText !== '') {
+            setRegexErrorText('')
+            while (i < regex.length) {
+                if (regex[i] === '') {
+                    setRegexErrorText("* No entries may be left blank *")
+                    return;
+                }
+                i++;
             }
-            i++;
         }
     };
 
@@ -296,7 +296,7 @@ const FileUploadButton = (props) => {
             const responseString = res.data.reduce((acc, obj) => {
                 return acc + `${obj}\n`
             }, '')
-            setPartialSwagger(responseString)
+            setPartialSwagger(responseString);
         }).catch((err) => console.error(err))
 
         await axios.get("http://localhost:8080/tests/coverage/getNoSwagger")
@@ -306,7 +306,7 @@ const FileUploadButton = (props) => {
                 const responseString = res.data.reduce((acc, obj) => {
                     return acc + `${obj}\n`
                 }, '')
-                setNoSwagger(responseString)
+                setNoSwagger(responseString);
             }).catch((err) => console.error(err))
 
         await axios.get("http://localhost:8080/tests/coverage/getFullGatling")
@@ -316,7 +316,7 @@ const FileUploadButton = (props) => {
                 const responseString = res.data.reduce((acc, obj) => {
                     return acc + `${obj}\n`
                 }, '')
-                setFullGatling(responseString)
+                setFullGatling(responseString);
             }).catch((err) => console.error(err))
 
         await axios.get("http://localhost:8080/tests/coverage/getNoGatling")
@@ -326,7 +326,7 @@ const FileUploadButton = (props) => {
                 const responseString = res.data.reduce((acc, obj) => {
                     return acc + `${obj}\n`
                 }, '')
-                setNoGatling(responseString)
+                setNoGatling(responseString);
             }).catch((err) => console.error(err))
 
         await axios.get("http://localhost:8080/tests/coverage/getFullSelenium")
@@ -336,7 +336,7 @@ const FileUploadButton = (props) => {
                 const responseString = res.data.reduce((acc, obj) => {
                     return acc + `${obj}\n`
                 }, '')
-                setFullSelenium(responseString)
+                setFullSelenium(responseString);
             }).catch((err) => console.error(err))
 
         await axios.get("http://localhost:8080/tests/coverage/getNoSelenium")
@@ -346,7 +346,7 @@ const FileUploadButton = (props) => {
                 const responseString = res.data.reduce((acc, obj) => {
                     return acc + `${obj}\n`
                 }, '')
-                setNoSelenium(responseString)
+                setNoSelenium(responseString);
             }).catch((err) => console.error(err))
 
         // setLoading(false)
