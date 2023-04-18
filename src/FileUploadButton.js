@@ -57,10 +57,10 @@ const FileUploadButton = (props) => {
     const [expandStatus, setExpandStatus] = useState("Expand All")
     const [testExpandingList, setTestExpandingList] = useState('')
     const [length, setLength] = useState(-1)
-    const [testTemp, setTestTemp] = useState(['', '', ''])
+    const [testTemp, setTestTemp] = useState(['', '', '', '', '', ''])
     const [globalPls, setGlobalPls] = useState('')
     const [num, setNum] = useState(-1)
-    const [existing, setExisting] = useState(['PATCH /patch', 'GET /1/1 POST', 'DELETE /delete'])
+    const [existing, setExisting] = useState(['PATCH /patch', 'GET /1/1', 'DELETE /delete'])
 
     const tempData = [
         {id: 1, name: "john"},
@@ -197,20 +197,27 @@ const FileUploadButton = (props) => {
     const handleListSetters = () => {
         let counter = 0
         setNum(Object.keys(testMap).length)
-        let arr = Array(Object.keys(testMap).length).fill('')
+        let arr = Array(Object.keys(testMap).length * 2).fill('')
         for (const [key, value] of Object.entries(testMap)) {
-            let local = ''
+            let localTested = ''
+            let localNot = ''
             let ind = Array.prototype.indexOf.call(testMap, key)
             // setNum(ind)
              for (const currentVal of value) {
                  // let tempStr = testExpandingList
                  // setTestExpandingList(tempStr)
-                 local = local + currentVal + '\n'
+                 if (existing.includes(currentVal)) {
+                     localTested = localTested + currentVal + '\n'
+                 } else {
+                     localNot = localNot + currentVal + '\n'
+                 }
+                 // local = local + currentVal + '\n'
              }
              // let current = [...testTemp]
             // current[counter] = local
-            arr[counter] = local
-            counter += 1
+            arr[counter] = localTested
+            arr[counter + 1] = localNot
+            counter += 2
             // setTestTemp(current)
             // setTestExpandingList(local)
         }
@@ -538,8 +545,13 @@ const FileUploadButton = (props) => {
                                         <div>{testExpandingList}</div>
                                         <div>{num}</div>
                                         <div>{testTemp[index]}</div>
-                                        <textarea style={{color: "green"}} cols="50" readOnly="true" rows={testTemp[index].split(/\r\n|\r|\n/).length - 1}>{testTemp[index]}</textarea>
-                                        {/*<div>{globalPls}</div>*/}
+                                        <div>
+                                            <textarea style={{color: "green"}} cols="50" readOnly="true" rows={testTemp[index * 2].split(/\r\n|\r|\n/).length - 1}>{testTemp[index * 2]}</textarea>
+                                        </div>
+                                        <div>
+                                            <textarea style={{color: "red"}} cols="50" readOnly="true" rows={testTemp[index * 2 + 1].split(/\r\n|\r|\n/).length - 1}>{testTemp[index * 2 + 1]}</textarea>
+                                        </div>
+                                            {/*<div>{globalPls}</div>*/}
                                         {/*<div>{length}</div>*/}
                                         {/*<div>{Object.keys(testMap).length}</div>*/}
                                     </div>
