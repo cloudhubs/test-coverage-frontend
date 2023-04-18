@@ -57,7 +57,7 @@ const FileUploadButton = (props) => {
     const [expandStatus, setExpandStatus] = useState("Expand All")
     const [testExpandingList, setTestExpandingList] = useState('')
     const [length, setLength] = useState(-1)
-    const [testTemp, setTestTemp] = useState(['', '', '', '', '', ''])
+    const [testTemp, setTestTemp] = useState([''])
     const [globalPls, setGlobalPls] = useState('')
     const [num, setNum] = useState(-1)
     const [existing, setExisting] = useState(['PATCH /patch', 'GET /1/1', 'DELETE /delete'])
@@ -532,10 +532,11 @@ const FileUploadButton = (props) => {
             <div>
                 <div>TESTING</div>
                 <div>collapse list size: {collapseList.length}</div>
-                <Button variant="success" style={{width: "380px"}} onClick={() => handleExpandAll()}>{expandStatus}</Button>
+                <Button variant="primary" style={{width: "380px"}} onClick={() => handleExpandAll()}>{expandStatus}</Button>
                 {Object.entries(testMap).map(([key,value], index)=>{
                     return (
                         <div>
+                            <br/>
                             <Button variant="outline-dark" style={{width: "380px"}} onClick={() => handleCollapse(index)}>{key}</Button>
                             <div>
                                 {collapseList.at(index) ?
