@@ -2,8 +2,7 @@ import React, {ChangeEvent, useState} from 'react';
 import axios from "axios"
 import {Button, Modal, Tab, Tabs} from 'react-bootstrap'
 import ClipLoader from "react-spinners/ClipLoader";
-import {pieData} from "./PieChartComponent";
-import PieChartComponent from "./PieChartComponent";
+import PieChartComponent, {pieData} from "./PieChartComponent";
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -11,7 +10,8 @@ import GatlingPieChart, {gatlingData} from "./GatlingPieChart";
 import SeleniumPieChart, {seleniumData} from "./SeleniumPieChart";
 import RegexInput from "./RegexInput";
 
-let key = 0
+let projectKey = 0
+let x = -1
 
 const FileUploadButton = (props) => {
     const theme = props.theme
@@ -45,6 +45,29 @@ const FileUploadButton = (props) => {
     const maxRegex = 10;
     const [regexErrorText, setRegexErrorText] = useState('')
 
+    const [testMap, setTestMap] = useState([])
+    const [testMapString, setTestMapString] = useState('')
+    const [testMapObj, setTestMapObj] = useState('')
+
+    const [keyList, setKeyList] = useState([])
+    const [valueList, setValueList] = useState([])
+    const [collapseList, setCollapseList] = useState([])
+    const [collapse, setCollapse] = useState(false)
+    const [expandALl, setExpandAll] = useState(false)
+    const [expandStatus, setExpandStatus] = useState("Expand All")
+    const [testExpandingList, setTestExpandingList] = useState('')
+    const [length, setLength] = useState(-1)
+    const [testTemp, setTestTemp] = useState(['', '', ''])
+    const [globalPls, setGlobalPls] = useState('')
+    const [num, setNum] = useState(-1)
+    const [existing, setExisting] = useState(['PATCH /patch', 'GET /1/1 POST', 'DELETE /delete'])
+
+    const tempData = [
+        {id: 1, name: "john"},
+        {id: 2, name: "donny"},
+        {id: 3, name: "chris"},
+    ];
+
     const fieldPrompt = "Field:  "
 
     const handleProjectZipChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -72,17 +95,17 @@ const FileUploadButton = (props) => {
         setRegex([''])
         // setLoading(true)
         // sendFiles()
-        //handleShow()
+        // handleShow()
     };
 
     const handleClose = () => {
-        key=key+1
+        projectKey=projectKey+1
         setShow(false)
         setShowPieChart(true)
     }
 
     const handleFieldClose = () => {
-        key=key+1
+        projectKey=projectKey+1
         setShowField(false)
         setShowRegex(false)
     }
@@ -127,8 +150,9 @@ const FileUploadButton = (props) => {
         // await timeout(3000);
         // setShow(true)
         setLoading(false)
-        key=key+1
+        projectKey=projectKey+1
         setShowPieChart(true)
+
         //key=key+1
         //setShowPieChart(true)
     }
@@ -169,6 +193,80 @@ const FileUploadButton = (props) => {
             }
         }
     };
+
+    const handleListSetters = () => {
+        let counter = 0
+        setNum(Object.keys(testMap).length)
+        let arr = Array(Object.keys(testMap).length).fill('')
+        for (const [key, value] of Object.entries(testMap)) {
+            let local = ''
+            let ind = Array.prototype.indexOf.call(testMap, key)
+            // setNum(ind)
+             for (const currentVal of value) {
+                 // let tempStr = testExpandingList
+                 // setTestExpandingList(tempStr)
+                 local = local + currentVal + '\n'
+             }
+             // let current = [...testTemp]
+            // current[counter] = local
+            arr[counter] = local
+            counter += 1
+            // setTestTemp(current)
+            // setTestExpandingList(local)
+        }
+        setTestTemp(arr);
+        // x = testMap.length
+        // const plsplspls = testMap
+        // let plsWork = vals[0];
+        // setGlobalPls(plsWork)
+        // let pls = ''
+        // for (let value of testMap.values()) {
+            // for (let value of values) {
+            //     pls = pls + value + ' '
+            // }
+            // setGlobalPls(testMap.values[0])
+        // }
+        // setLength(Object.keys(testMap).length)
+        // setTestTemp(testTemp)
+        // setTestExpandingList(['', '', ''])
+        // for (let i = 0; i < 3; i++) {
+        //     let current = [...testExpandingList]
+        //     let currentStr = '1'
+        //     for (let j = 0; j < 3; j++) {
+        //         // currentStr = currentStr + testMap[i].value[j] + '\n'
+        //     }
+        //     current[i] = currentStr
+        //     setTestExpandingList(current)
+        // }
+    }
+
+    const handleCollapse = (index) => {
+        handleListSetters()
+        let current = [...collapseList]
+        // let update = {...collapseList[index]}
+        // update = !update
+        let update = current[index]
+        current[index] = !update
+
+        setCollapseList(current)
+    }
+
+    const handleExpandAll = () => {
+        handleListSetters()
+        let expanded = expandALl
+        expanded = !expanded
+        setExpandAll(expanded)
+        let current = [...collapseList]
+        current.fill(expanded)
+
+        if (expandStatus.toString() === "Expand All") {
+            setExpandStatus("Collapse All")
+        } else {
+            setExpandStatus("Expand All")
+        }
+
+        setCollapseList(current)
+    }
 
     const sendFiles = async() => {
         //send file to backend to get the results
@@ -349,6 +447,28 @@ const FileUploadButton = (props) => {
                 setNoSelenium(responseString);
             }).catch((err) => console.error(err))
 
+        await axios.get("http://localhost:8080/tests/coverage/getTestMap")
+            .then((res) => {
+                console.log(res.data)
+
+                setTestMap(res.data);
+
+                /** Good */
+                setKeyList(Object.keys(res.data));
+                setTestMapString("test2");
+                setCollapseList([false, false, false])
+
+
+                Object.keys(res.data).map((current) => {
+                    return (
+                        setValueList([...valueList, res.data[current]])
+                    );
+                })
+
+            }).catch((err) => console.error(err))
+
+        // handleListSetters()
+
         // setLoading(false)
         handleShow()
 
@@ -391,16 +511,86 @@ const FileUploadButton = (props) => {
                 aria-label="Loading Spinner"
                 data-testid="loader"
             />
-            {/*<div>*/}
-            {/*    {regex.map((current) =>*/}
-            {/*        <div>{current}</div>*/}
-            {/*    )}*/}
+
+            <div>
+                <br/>
+                <Button onClick={() => setCollapse(!collapse)}>Switch</Button>
+                {collapse ?
+                    <div>show</div>
+                    : null
+                }
+            </div>
+
+            <br/>
+            <div>
+                <div>TESTING</div>
+                <div>collapse list size: {collapseList.length}</div>
+                <Button variant="success" style={{width: "380px"}} onClick={() => handleExpandAll()}>{expandStatus}</Button>
+                {Object.entries(testMap).map(([key,value], index)=>{
+                    return (
+                        <div>
+                            <Button variant="outline-dark" style={{width: "380px"}} onClick={() => handleCollapse(index)}>{key}</Button>
+                            <div>
+                                {collapseList.at(index) ?
+                                    <div>
+                                        {/*<div>{x}</div>*/}
+                                        <div>{value.toString()}</div>
+                                        <div>{testExpandingList}</div>
+                                        <div>{num}</div>
+                                        <div>{testTemp[index]}</div>
+                                        <textarea style={{color: "green"}} cols="50" readOnly="true" rows={testTemp[index].split(/\r\n|\r|\n/).length - 1}>{testTemp[index]}</textarea>
+                                        {/*<div>{globalPls}</div>*/}
+                                        {/*<div>{length}</div>*/}
+                                        {/*<div>{Object.keys(testMap).length}</div>*/}
+                                    </div>
+                                    : null}
+                            </div>
+                            {/*<div>{key}</div>*/}
+                            {/*<div>{value.toString()}</div>*/}
+                        </div>
+                    );
+                })
+                }
+                {/*<div>{collapseList.toString()}</div>*/}
+            </div>
+            <br/>
+
+            {/*<div key={projectKey}>*/}
+            {/*    <div>Key list: {keyList.toString()}</div>*/}
+            {/*    <div>*/}
+            {/*        {Object.entries(keyList).map((current,index)=>{*/}
+            {/*            return (*/}
+            {/*                <div>*/}
+            {/*                    <div>{current}</div>*/}
+            {/*                    <div>key: {current} - {collapseList.at(index).toString()}</div>*/}
+            {/*                </div>*/}
+            {/*            );*/}
+            {/*        })}*/}
+            {/*    </div>*/}
+            {/*    <br/>*/}
+            {/*    <div>*/}
+            {/*        {Object.entries(testMap).map(([key,value])=>{*/}
+            {/*            return (*/}
+            {/*                <div>*/}
+            {/*                    <div>{key}</div>*/}
+            {/*                    <div>{value.toString()}</div>*/}
+            {/*                </div>*/}
+            {/*            );*/}
+            {/*        })*/}
+            {/*        }*/}
+            {/*    </div>*/}
+            {/*    <div>*/}
+            {/*        {testMapString}*/}
+            {/*    </div>*/}
+            {/*    <div>*/}
+            {/*        {tempData.map((current) => <div>{current.id} {current.name}</div>)}*/}
+            {/*    </div>*/}
             {/*</div>*/}
 
             <Container fluid>
                 <Row>
                     <Col>
-                        <div key={key} style={{maxWidth: "380px", whiteSpace: 'pre'}}>
+                        <div key={projectKey} style={{maxWidth: "380px", whiteSpace: 'pre'}}>
                             {showPieChart ?
                                 <h3>Total Coverage</h3>
                                 : null}
@@ -425,7 +615,7 @@ const FileUploadButton = (props) => {
                         </div>
                     </Col>
                     <Col>
-                        <div key={key} style={{maxWidth: "380px", whiteSpace: 'pre'}}>
+                        <div key={projectKey} style={{maxWidth: "380px", whiteSpace: 'pre'}}>
                             {showPieChart ?
                                 <h3>Gatling</h3>
                                 : null}
@@ -445,7 +635,7 @@ const FileUploadButton = (props) => {
                         </div>
                     </Col>
                     <Col>
-                        <div key={key} style={{maxWidth: "380px", whiteSpace: 'pre'}}>
+                        <div key={projectKey} style={{maxWidth: "380px", whiteSpace: 'pre'}}>
                             {showPieChart ?
                                 <h3>Selenium</h3>
                                 : null}
