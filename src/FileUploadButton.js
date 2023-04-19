@@ -45,6 +45,18 @@ const FileUploadButton = (props) => {
     const maxRegex = 10;
     const [regexErrorText, setRegexErrorText] = useState('')
 
+    /** Map stuffs */
+    const [swaggerMap, setSwaggerMap] = useState([])
+    const [swaggerCollapse, setSwaggerCollapse] = useState([])
+    const [gatlingCollapse, setGatlingCollapse] = useState([])
+    const [seleniumCollapse, setSeleniumCollapse] = useState([])
+    const [expandAllList, setExpandAllList] = useState([false, false, false])
+    const [textExpand, setTextExpand] = useState(false)
+    const [expandStatusList, setExpandStatusList] = useState(Array(3).fill("Expand All"))
+    const [gatlingSplit, setGatlingSplit] = useState([''])
+    const [gatlingPct, setGatlingPct] = useState([])
+    const [testingLength, setTestingLength] = useState(-1)
+
     const [testMap, setTestMap] = useState([])
     const [testMapString, setTestMapString] = useState('')
     const [testMapObj, setTestMapObj] = useState('')
@@ -61,6 +73,8 @@ const FileUploadButton = (props) => {
     const [globalPls, setGlobalPls] = useState('')
     const [num, setNum] = useState(-1)
     const [existing, setExisting] = useState(['PATCH /patch', 'GET /1/1', 'DELETE /delete'])
+    const [percentPer, setPercentPer] = useState([])
+    const [firstExpand, setFirstExpand] = useState(false)
 
     const tempData = [
         {id: 1, name: "john"},
@@ -171,6 +185,20 @@ const FileUploadButton = (props) => {
         setRegex(values);
     };
 
+    const styles = {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        color: 'green',
+        // height: '100vh',
+    };
+
+    const centerButton = {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+    }
+
     const handleDelete = (event, index) => {
         const values = [...regex];
         values.splice(index, 1);
@@ -198,9 +226,12 @@ const FileUploadButton = (props) => {
         let counter = 0
         setNum(Object.keys(testMap).length)
         let arr = Array(Object.keys(testMap).length * 2).fill('')
+        let pct = Array(Object.keys(testMap).length).fill(0.0)
         for (const [key, value] of Object.entries(testMap)) {
             let localTested = ''
+            let testNum = 0
             let localNot = ''
+            let notNum = 0
             let ind = Array.prototype.indexOf.call(testMap, key)
             // setNum(ind)
              for (const currentVal of value) {
@@ -208,8 +239,10 @@ const FileUploadButton = (props) => {
                  // setTestExpandingList(tempStr)
                  if (existing.includes(currentVal)) {
                      localTested = localTested + currentVal + '\n'
+                     testNum += 1
                  } else {
                      localNot = localNot + currentVal + '\n'
+                     notNum += 1
                  }
                  // local = local + currentVal + '\n'
              }
@@ -217,11 +250,13 @@ const FileUploadButton = (props) => {
             // current[counter] = local
             arr[counter] = localTested
             arr[counter + 1] = localNot
+            pct[counter / 2] = (testNum * 100) / (testNum + notNum)
             counter += 2
             // setTestTemp(current)
             // setTestExpandingList(local)
         }
         setTestTemp(arr);
+        setPercentPer(pct)
         // x = testMap.length
         // const plsplspls = testMap
         // let plsWork = vals[0];
@@ -248,7 +283,10 @@ const FileUploadButton = (props) => {
     }
 
     const handleCollapse = (index) => {
-        handleListSetters()
+        if (firstExpand === false) {
+            setFirstExpand(true)
+            handleListSetters()
+        }
         let current = [...collapseList]
         // let update = {...collapseList[index]}
         // update = !update
@@ -258,8 +296,79 @@ const FileUploadButton = (props) => {
         setCollapseList(current)
     }
 
+    const handleExpandAllGatling = () => {
+        if (textExpand === false) {
+            setTextExpand(true)
+            handleGatlingLists()
+        }
+
+        let expanded = expandAllList
+        expanded[1] = !expanded[1]
+        setExpandAllList(expanded)
+        let current = [...gatlingCollapse]
+        current.fill(expanded[1])
+
+        let currentStatus = [...expandStatusList]
+
+        if (currentStatus[1].toString() === "Expand All") {
+            currentStatus[1] = "Collapse All"
+        } else {
+            currentStatus[1] = "Expand All"
+        }
+        setExpandStatusList(currentStatus)
+
+        setGatlingCollapse(current)
+    }
+
+    const handleCollapseGatling = (index) => {
+        if (textExpand === false) {
+            setTextExpand(true)
+            handleGatlingLists()
+        }
+
+        let current = [...gatlingCollapse]
+        let update = current[index]
+        current[index] = !update
+
+        setGatlingCollapse(current)
+    }
+
+    const handleGatlingLists = () => {
+        let counter = 0
+        let arr = Array(Object.keys(swaggerMap).length * 2).fill('')
+        let pct = Array(Object.keys(swaggerMap).length).fill(0.0)
+
+        for (const [key, value] of Object.entries(swaggerMap)) {
+            let localTested = ''
+            let testNum = 0
+            let localNot = ''
+            let notNum = 0
+
+            for (const currentVal of value) {
+                if (fullGatling.includes(currentVal)) {
+                    localTested = localTested + currentVal + '\n'
+                    testNum += 1
+                } else {
+                    localNot = localNot + currentVal + '\n'
+                    notNum += 1
+                }
+            }
+            arr[counter] = localTested
+            arr[counter + 1] = localNot
+            pct[counter / 2] = (testNum * 100) / (testNum + notNum)
+            counter += 2
+            setTestingLength(value.length)
+        }
+
+        setGatlingSplit(arr)
+        setGatlingPct(pct)
+    }
+
     const handleExpandAll = () => {
-        handleListSetters()
+        if (firstExpand === false) {
+            setFirstExpand(true)
+            handleListSetters()
+        }
         let expanded = expandALl
         expanded = !expanded
         setExpandAll(expanded)
@@ -463,7 +572,7 @@ const FileUploadButton = (props) => {
                 /** Good */
                 setKeyList(Object.keys(res.data));
                 setTestMapString("test2");
-                setCollapseList([false, false, false])
+                setCollapseList(Array(Object.keys(res.data).length).fill(false))
 
 
                 Object.keys(res.data).map((current) => {
@@ -472,6 +581,17 @@ const FileUploadButton = (props) => {
                     );
                 })
 
+            }).catch((err) => console.error(err))
+
+        await axios.get("http://localhost:8080/tests/coverage/getSwaggerMap")
+            .then((res) => {
+                console.log(res.data)
+
+                setSwaggerMap(res.data)
+
+                setSwaggerCollapse(Array(Object.keys(res.data).length).fill(false))
+                setGatlingCollapse(Array(Object.keys(res.data).length).fill(false))
+                setSeleniumCollapse(Array(Object.keys(res.data).length).fill(false))
             }).catch((err) => console.error(err))
 
         // handleListSetters()
@@ -537,19 +657,22 @@ const FileUploadButton = (props) => {
                     return (
                         <div>
                             <br/>
-                            <Button variant="outline-dark" style={{width: "380px"}} onClick={() => handleCollapse(index)}>{key}</Button>
+                            <div style={styles}>
+                                <Button variant="outline-dark" style={{width: "380px"}} onClick={() => handleCollapse(index)}>{key}</Button>
+                            </div>
                             <div>
                                 {collapseList.at(index) ?
-                                    <div>
+                                    <div style={styles}>
                                         {/*<div>{x}</div>*/}
-                                        <div>{value.toString()}</div>
-                                        <div>{testExpandingList}</div>
-                                        <div>{num}</div>
-                                        <div>{testTemp[index]}</div>
-                                        <div>
+                                        <div style={{color: 'green'}}>{percentPer[index].toFixed(2)}% Coverage</div>
+                                        {/*<div>{value.toString()}</div>*/}
+                                        {/*<div>{testExpandingList}</div>*/}
+                                        {/*<div>{num}</div>*/}
+                                        {/*<div>{testTemp[index]}</div>*/}
+                                        <div style={{maxWidth: "380px", whiteSpace: 'pre'}}>
                                             <textarea style={{color: "green"}} cols="50" readOnly="true" rows={testTemp[index * 2].split(/\r\n|\r|\n/).length - 1}>{testTemp[index * 2]}</textarea>
                                         </div>
-                                        <div>
+                                        <div style={{maxWidth: "380px", whiteSpace: 'pre'}}>
                                             <textarea style={{color: "red"}} cols="50" readOnly="true" rows={testTemp[index * 2 + 1].split(/\r\n|\r|\n/).length - 1}>{testTemp[index * 2 + 1]}</textarea>
                                         </div>
                                             {/*<div>{globalPls}</div>*/}
@@ -610,42 +733,76 @@ const FileUploadButton = (props) => {
                             {showPieChart ?
                                 <PieChartComponent />
                             : null}
-                            {showPieChart ?
-                                <div style={{maxWidth: "380px", whiteSpace: 'pre'}}>
-                                    <textarea style={{color: "green"}} cols="50" readOnly="true" rows={fullSwagger.split(/\r\n|\r|\n/).length}>{fullSwagger}</textarea>
-                                </div>
-                                : null}
-                            {showPieChart ?
-                                <div style={{maxWidth: "380px", whiteSpace: 'pre'}}>
-                                    <textarea style={{color: "gold"}} cols="50" readOnly="true" rows={partialSwagger.split(/\r\n|\r|\n/).length}>{partialSwagger}</textarea>
-                                </div>
-                                : null}
-                            {showPieChart ?
-                                <div style={{maxWidth: "380px", whiteSpace: 'pre'}}>
-                                    <textarea style={{color: "red"}} cols="50" readOnly="true" rows={noSwagger.split(/\r\n|\r|\n/).length}>{noSwagger}</textarea>
-                                </div>
-                                : null}
+                            {/*{showPieChart ?*/}
+                            {/*    <div style={{maxWidth: "380px", whiteSpace: 'pre'}}>*/}
+                            {/*        <textarea style={{color: "green"}} cols="50" readOnly="true" rows={fullSwagger.split(/\r\n|\r|\n/).length}>{fullSwagger}</textarea>*/}
+                            {/*    </div>*/}
+                            {/*    : null}*/}
+                            {/*{showPieChart ?*/}
+                            {/*    <div style={{maxWidth: "380px", whiteSpace: 'pre'}}>*/}
+                            {/*        <textarea style={{color: "gold"}} cols="50" readOnly="true" rows={partialSwagger.split(/\r\n|\r|\n/).length}>{partialSwagger}</textarea>*/}
+                            {/*    </div>*/}
+                            {/*    : null}*/}
+                            {/*{showPieChart ?*/}
+                            {/*    <div style={{maxWidth: "380px", whiteSpace: 'pre'}}>*/}
+                            {/*        <textarea style={{color: "red"}} cols="50" readOnly="true" rows={noSwagger.split(/\r\n|\r|\n/).length}>{noSwagger}</textarea>*/}
+                            {/*    </div>*/}
+                            {/*    : null}*/}
                         </div>
                     </Col>
                     <Col>
+                        {showPieChart ?
                         <div key={projectKey} style={{maxWidth: "380px", whiteSpace: 'pre'}}>
-                            {showPieChart ?
+                            {/*{showPieChart ?*/}
                                 <h3>Gatling</h3>
-                                : null}
-                            {showPieChart ?
+                                {/*// : null}*/}
+                            {/*{showPieChart ?*/}
                                 <GatlingPieChart />
-                                : null}
-                            {showPieChart ?
-                                <div style={{maxWidth: "380px", whiteSpace: 'pre'}}>
-                                    <textarea style={{color: "green"}} cols="50" readOnly="true" rows={fullGatling.split(/\r\n|\r|\n/).length}>{fullGatling}</textarea>
-                                </div>
-                                : null}
-                            {showPieChart ?
-                                <div style={{maxWidth: "380px", whiteSpace: 'pre'}}>
-                                    <textarea style={{color: "red"}} cols="50" readOnly="true" rows={noGatling.split(/\r\n|\r|\n/).length}>{noGatling}</textarea>
-                                </div>
-                                : null}
+                                {/*// : null}*/}
+                            {/*<div>{swaggerMap.length}</div>*/}
+                            <div>{Object.keys(swaggerMap).length}</div>
+                            {/*<div>{gatlingSplit.toString()}</div>*/}
+
+                            <div style={{textAlign: "center"}}>
+                                <Button variant="primary" style={{width: "380px"}} onClick={() => handleExpandAllGatling()}>{expandStatusList[1]}</Button>
+                            </div>
+                            {Object.entries(swaggerMap).map(([key,value], index)=>{
+                                return (
+                                    <div>
+                                        <br/>
+                                        <div style={centerButton}>
+                                            <Button variant="outline-dark" style={{width: "380px"}} onClick={() => handleCollapseGatling(index)}>{key}</Button>
+                                        </div>
+                                        {gatlingCollapse.at(index) ?
+                                            <div>
+                                                {/*<div>{index}</div>*/}
+                                                {/*<div>{testingLength}</div>*/}
+                                                <div style={styles}>{gatlingPct[index].toFixed(2)}% Coverage</div>
+                                                <div style={{maxWidth: "380px", whiteSpace: 'pre'}}>
+                                                    <textarea style={{color: "green"}} cols="50" readOnly="true" rows={gatlingSplit[index * 2].split(/\r\n|\r|\n/).length - 1}>{gatlingSplit[index * 2]}</textarea>
+                                                </div>
+                                                <div style={{maxWidth: "380px", whiteSpace: 'pre'}}>
+                                                    <textarea style={{color: "red"}} cols="50" readOnly="true" rows={gatlingSplit[index * 2 + 1].split(/\r\n|\r|\n/).length - 1}>{gatlingSplit[index * 2 + 1]}</textarea>
+                                                </div>
+                                            </div>
+                                        : null}
+                                    </div>
+                                );
+                            })
+                            }
+
+                            {/*{showPieChart ?*/}
+                            {/*    <div style={{maxWidth: "380px", whiteSpace: 'pre'}}>*/}
+                            {/*        <textarea style={{color: "green"}} cols="50" readOnly="true" rows={fullGatling.split(/\r\n|\r|\n/).length}>{fullGatling}</textarea>*/}
+                            {/*    </div>*/}
+                            {/*    : null}*/}
+                            {/*{showPieChart ?*/}
+                            {/*    <div style={{maxWidth: "380px", whiteSpace: 'pre'}}>*/}
+                            {/*        <textarea style={{color: "red"}} cols="50" readOnly="true" rows={noGatling.split(/\r\n|\r|\n/).length}>{noGatling}</textarea>*/}
+                            {/*    </div>*/}
+                            {/*    : null}*/}
                         </div>
+                            : null}
                     </Col>
                     <Col>
                         <div key={projectKey} style={{maxWidth: "380px", whiteSpace: 'pre'}}>
@@ -655,16 +812,16 @@ const FileUploadButton = (props) => {
                             {showPieChart ?
                                 <SeleniumPieChart />
                                 : null}
-                            {showPieChart ?
-                                <div style={{maxWidth: "380px", whiteSpace: 'pre'}}>
-                                    <textarea style={{color: "green"}} cols="50" readOnly="true" rows={fullSelenium.split(/\r\n|\r|\n/).length}>{fullSelenium}</textarea>
-                                </div>
-                                : null}
-                            {showPieChart ?
-                                <div style={{maxWidth: "380px", whiteSpace: 'pre'}}>
-                                    <textarea style={{color: "red"}} cols="50" readOnly="true" rows={noSelenium.split(/\r\n|\r|\n/).length}>{noSelenium}</textarea>
-                                </div>
-                                : null}
+                            {/*{showPieChart ?*/}
+                            {/*    <div style={{maxWidth: "380px", whiteSpace: 'pre'}}>*/}
+                            {/*        <textarea style={{color: "green"}} cols="50" readOnly="true" rows={fullSelenium.split(/\r\n|\r|\n/).length}>{fullSelenium}</textarea>*/}
+                            {/*    </div>*/}
+                            {/*    : null}*/}
+                            {/*{showPieChart ?*/}
+                            {/*    <div style={{maxWidth: "380px", whiteSpace: 'pre'}}>*/}
+                            {/*        <textarea style={{color: "red"}} cols="50" readOnly="true" rows={noSelenium.split(/\r\n|\r|\n/).length}>{noSelenium}</textarea>*/}
+                            {/*    </div>*/}
+                            {/*    : null}*/}
                         </div>
                     </Col>
                 </Row>
