@@ -51,11 +51,19 @@ const FileUploadButton = (props) => {
     const [gatlingCollapse, setGatlingCollapse] = useState([])
     const [seleniumCollapse, setSeleniumCollapse] = useState([])
     const [expandAllList, setExpandAllList] = useState([false, false, false])
-    const [textExpand, setTextExpand] = useState(false)
+    const [textExpand, setTextExpand] = useState([false, false, false])
     const [expandStatusList, setExpandStatusList] = useState(Array(3).fill("Expand All"))
     const [gatlingSplit, setGatlingSplit] = useState([''])
+    const [seleniumSplit, setSeleniumSplit] = useState([''])
+    const [swaggerSplit, setSwaggerSplit] = useState([''])
     const [gatlingPct, setGatlingPct] = useState([])
+    const [seleniumPct, setSeleniumPct] = useState([])
+    const [swaggerPct, setSwaggerPct] = useState([])
     const [testingLength, setTestingLength] = useState(-1)
+
+    const [jsonStr, setJsonStr] = useState('')
+    const [jsonButton] = useState('JSON')
+    const [jsonBool, setJsonBool] = useState(false)
 
     const [testMap, setTestMap] = useState([])
     const [testMapString, setTestMapString] = useState('')
@@ -107,6 +115,14 @@ const FileUploadButton = (props) => {
         setField('')
         setShowField(true)
         setRegex([''])
+        setExpandStatusList(Array(3).fill("Expand All"))
+        setTextExpand([false, false, false])
+
+        setSwaggerCollapse(Array(Object.keys(swaggerMap).length).fill(false))
+        setGatlingCollapse(Array(Object.keys(swaggerMap).length).fill(false))
+        setSeleniumCollapse(Array(Object.keys(swaggerMap).length).fill(false))
+
+        setExpandAllList([false, false, false])
         // setLoading(true)
         // sendFiles()
         // handleShow()
@@ -193,10 +209,18 @@ const FileUploadButton = (props) => {
         // height: '100vh',
     };
 
+    const partialStyles = {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        color: 'gold',
+    };
+
     const centerButton = {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
+        width: '100%',
     }
 
     const handleDelete = (event, index) => {
@@ -282,6 +306,21 @@ const FileUploadButton = (props) => {
         // }
     }
 
+    const prettifyJSON = (str) => {
+        try {
+            const json = JSON.parse(str);
+            const prettified = JSON.stringify(json, null, 2);
+            setJsonStr(prettified)
+        } catch (error) {
+            console.error(error)
+        }
+    }
+
+    const handleCloseJsonModal = () => {
+        // prettifyJSON();
+        setJsonBool(false);
+    }
+
     const handleCollapse = (index) => {
         if (firstExpand === false) {
             setFirstExpand(true)
@@ -297,8 +336,10 @@ const FileUploadButton = (props) => {
     }
 
     const handleExpandAllGatling = () => {
-        if (textExpand === false) {
-            setTextExpand(true)
+        if (textExpand[1] === false) {
+            let rn = textExpand
+            rn[1] = true;
+            setTextExpand(rn)
             handleGatlingLists()
         }
 
@@ -320,9 +361,64 @@ const FileUploadButton = (props) => {
         setGatlingCollapse(current)
     }
 
+    const handleExpandAllSelenium = () => {
+        if (textExpand[2] === false) {
+            let rn = textExpand
+            rn[2] = true;
+            setTextExpand(rn)
+            handleSeleniumLists()
+        }
+
+        let expanded = expandAllList
+        expanded[2] = !expanded[2]
+        setExpandAllList(expanded)
+        let current = [...seleniumCollapse]
+        current.fill(expanded[2])
+
+        let currentStatus = [...expandStatusList]
+
+        if (currentStatus[2].toString() === "Expand All") {
+            currentStatus[2] = "Collapse All"
+        } else {
+            currentStatus[2] = "Expand All"
+        }
+        setExpandStatusList(currentStatus)
+
+        setSeleniumCollapse(current)
+    }
+
+    const handleExpandAllSwagger = () => {
+        if (textExpand[0] === false) {
+            let rn = textExpand
+            rn[0] = true;
+            setTextExpand(rn)
+            handleSwaggerLists()
+        }
+
+        let expanded = expandAllList
+        expanded[0] = !expanded[0]
+        setExpandAllList(expanded)
+        let current = [...swaggerCollapse]
+        current.fill(expanded[0])
+
+        let currentStatus = [...expandStatusList]
+
+        if (currentStatus[0].toString() === "Expand All") {
+            currentStatus[0] = "Collapse All"
+        } else {
+            currentStatus[0] = "Expand All"
+        }
+        setExpandStatusList(currentStatus)
+
+        setSwaggerCollapse(current)
+    }
+
     const handleCollapseGatling = (index) => {
-        if (textExpand === false) {
-            setTextExpand(true)
+        if (textExpand[1] === false) {
+            // setTextExpand(true)
+            let rn = textExpand
+            rn[1] = true;
+            setTextExpand(rn);
             handleGatlingLists()
         }
 
@@ -332,6 +428,37 @@ const FileUploadButton = (props) => {
 
         setGatlingCollapse(current)
     }
+
+    const handleCollapseSelenium = (index) => {
+        if (textExpand[2] === false) {
+            let rn = textExpand
+            rn[2] = true;
+            setTextExpand(rn)
+            handleSeleniumLists()
+        }
+
+        let current = [...seleniumCollapse]
+        let update = current[index]
+        current[index] = !update
+
+        setSeleniumCollapse(current)
+    }
+
+    const handleCollapseSwagger = (index) => {
+        if (textExpand[0] === false) {
+            let rn = textExpand
+            rn[0] = true;
+            setTextExpand(rn)
+            handleSwaggerLists()
+        }
+
+        let current = [...swaggerCollapse]
+        let update = current[index]
+        current[index] = !update
+
+        setSwaggerCollapse(current)
+    }
+
 
     const handleGatlingLists = () => {
         let counter = 0
@@ -362,6 +489,76 @@ const FileUploadButton = (props) => {
 
         setGatlingSplit(arr)
         setGatlingPct(pct)
+    }
+
+    const handleSeleniumLists = () => {
+        let counter = 0
+        let arr = Array(Object.keys(swaggerMap).length * 2).fill('')
+        let pct = Array(Object.keys(swaggerMap).length).fill(0.0)
+
+        for (const [key, value] of Object.entries(swaggerMap)) {
+            let localTested = ''
+            let testNum = 0
+            let localNot = ''
+            let notNum = 0
+
+            for (const currentVal of value) {
+                if (fullSelenium.includes(currentVal)) {
+                    localTested = localTested + currentVal + '\n'
+                    testNum += 1
+                } else {
+                    localNot = localNot + currentVal + '\n'
+                    notNum += 1
+                }
+            }
+            arr[counter] = localTested
+            arr[counter + 1] = localNot
+            pct[counter / 2] = (testNum * 100) / (testNum + notNum)
+            counter += 2
+            // setTestingLength(value.length)
+        }
+
+        setSeleniumSplit(arr)
+        setSeleniumPct(pct)
+    }
+
+    const handleSwaggerLists = () => {
+        let counter = 0
+        let arr = Array(Object.keys(swaggerMap).length * 3).fill('')
+        let pct = Array(Object.keys(swaggerMap).length * 2).fill(0.0)
+
+        for (const [key, value] of Object.entries(swaggerMap)) {
+            let localFullTested = ''
+            let fullNum = 0
+            let localPartialTested = ''
+            let partialNum = 0
+            let localNot = ''
+            let notNum = 0
+
+            for (const currentVal of value) {
+                if (fullSwagger.includes(currentVal)) {
+                    localFullTested = localFullTested + currentVal + '\n'
+                    fullNum += 1
+                } else if (partialSwagger.includes(currentVal)) {
+                    localPartialTested = localPartialTested + currentVal + '\n'
+                    partialNum += 1
+                } else {
+                    localNot = localNot + currentVal + '\n'
+                    notNum += 1
+                }
+            }
+            arr[counter] = localFullTested
+            arr[counter + 1] = localPartialTested
+            arr[counter + 2] = localNot
+            pct[(counter / 3) * 2] = (fullNum * 100) / (partialNum + fullNum + notNum)
+            pct[(counter / 3) * 2 + 1] = (partialNum * 100) /  (partialNum + fullNum + notNum)
+            // pct[counter / 2] = (testNum * 100) / (testNum + notNum)
+            counter += 3
+            // setTestingLength(value.length)
+        }
+
+        setSwaggerSplit(arr)
+        setSwaggerPct(pct)
     }
 
     const handleExpandAll = () => {
@@ -594,6 +791,24 @@ const FileUploadButton = (props) => {
                 setSeleniumCollapse(Array(Object.keys(res.data).length).fill(false))
             }).catch((err) => console.error(err))
 
+        await axios.get("http://localhost:8080/tests/coverage/getJsonCoverage")
+            .then((res) => {
+                // setJsonStr(res.data.reduce((acc, obj) => {
+                //     return acc + `${obj}\n`
+                // }, ''))
+                // setJsonStr(res.toString)
+                console.log(res.data)
+
+                // setJsonStr(res.data)
+
+                // const responseString = res.data.reduce((acc, obj) => {
+                //     return acc + `${obj.method} ${obj.path}\n`
+                // }, '')
+
+                // setJsonStr(res.data + '}')
+                prettifyJSON(res.data + '}')
+            }).catch((err) => console.error(err))
+
         // handleListSetters()
 
         // setLoading(false)
@@ -639,56 +854,64 @@ const FileUploadButton = (props) => {
                 data-testid="loader"
             />
 
-            <div>
-                <br/>
-                <Button onClick={() => setCollapse(!collapse)}>Switch</Button>
-                {collapse ?
-                    <div>show</div>
-                    : null
-                }
-            </div>
+            {/*<div>*/}
+            {/*    <br/>*/}
+            {/*    <Button onClick={() => setCollapse(!collapse)}>Switch</Button>*/}
+            {/*    {collapse ?*/}
+            {/*        <div>show</div>*/}
+            {/*        : null*/}
+            {/*    }*/}
+            {/*</div>*/}
 
             <br/>
-            <div>
-                <div>TESTING</div>
-                <div>collapse list size: {collapseList.length}</div>
-                <Button variant="primary" style={{width: "380px"}} onClick={() => handleExpandAll()}>{expandStatus}</Button>
-                {Object.entries(testMap).map(([key,value], index)=>{
-                    return (
-                        <div>
-                            <br/>
-                            <div style={styles}>
-                                <Button variant="outline-dark" style={{width: "380px"}} onClick={() => handleCollapse(index)}>{key}</Button>
-                            </div>
-                            <div>
-                                {collapseList.at(index) ?
-                                    <div style={styles}>
-                                        {/*<div>{x}</div>*/}
-                                        <div style={{color: 'green'}}>{percentPer[index].toFixed(2)}% Coverage</div>
-                                        {/*<div>{value.toString()}</div>*/}
-                                        {/*<div>{testExpandingList}</div>*/}
-                                        {/*<div>{num}</div>*/}
-                                        {/*<div>{testTemp[index]}</div>*/}
-                                        <div style={{maxWidth: "380px", whiteSpace: 'pre'}}>
-                                            <textarea style={{color: "green"}} cols="50" readOnly="true" rows={testTemp[index * 2].split(/\r\n|\r|\n/).length - 1}>{testTemp[index * 2]}</textarea>
-                                        </div>
-                                        <div style={{maxWidth: "380px", whiteSpace: 'pre'}}>
-                                            <textarea style={{color: "red"}} cols="50" readOnly="true" rows={testTemp[index * 2 + 1].split(/\r\n|\r|\n/).length - 1}>{testTemp[index * 2 + 1]}</textarea>
-                                        </div>
-                                            {/*<div>{globalPls}</div>*/}
-                                        {/*<div>{length}</div>*/}
-                                        {/*<div>{Object.keys(testMap).length}</div>*/}
-                                    </div>
-                                    : null}
-                            </div>
-                            {/*<div>{key}</div>*/}
-                            {/*<div>{value.toString()}</div>*/}
-                        </div>
-                    );
-                })
-                }
-                {/*<div>{collapseList.toString()}</div>*/}
-            </div>
+            {showPieChart ?
+                <div>
+                    <br/>
+                    <Button variant="secondary" onClick={() => setJsonBool(true)}>{jsonButton}</Button>
+                </div>
+                : null}
+
+            <br/>
+            {/*<div>*/}
+            {/*    <div>TESTING</div>*/}
+            {/*    <div>collapse list size: {collapseList.length}</div>*/}
+            {/*    <Button variant="primary" style={{width: "380px"}} onClick={() => handleExpandAll()}>{expandStatus}</Button>*/}
+            {/*    {Object.entries(testMap).map(([key,value], index)=>{*/}
+            {/*        return (*/}
+            {/*            <div>*/}
+            {/*                <br/>*/}
+            {/*                <div style={styles}>*/}
+            {/*                    <Button variant="outline-dark" style={{width: "380px"}} onClick={() => handleCollapse(index)}>{key}</Button>*/}
+            {/*                </div>*/}
+            {/*                <div>*/}
+            {/*                    {collapseList.at(index) ?*/}
+            {/*                        <div style={styles}>*/}
+            {/*                            /!*<div>{x}</div>*!/*/}
+            {/*                            <div style={{color: 'green'}}>{percentPer[index].toFixed(2)}% Coverage</div>*/}
+            {/*                            /!*<div>{value.toString()}</div>*!/*/}
+            {/*                            /!*<div>{testExpandingList}</div>*!/*/}
+            {/*                            /!*<div>{num}</div>*!/*/}
+            {/*                            /!*<div>{testTemp[index]}</div>*!/*/}
+            {/*                            <div style={{maxWidth: "380px", whiteSpace: 'pre'}}>*/}
+            {/*                                <textarea style={{color: "green"}} cols="50" readOnly="true" rows={testTemp[index * 2].split(/\r\n|\r|\n/).length - 1}>{testTemp[index * 2]}</textarea>*/}
+            {/*                            </div>*/}
+            {/*                            <div style={{maxWidth: "380px", whiteSpace: 'pre'}}>*/}
+            {/*                                <textarea style={{color: "red"}} cols="50" readOnly="true" rows={testTemp[index * 2 + 1].split(/\r\n|\r|\n/).length - 1}>{testTemp[index * 2 + 1]}</textarea>*/}
+            {/*                            </div>*/}
+            {/*                                /!*<div>{globalPls}</div>*!/*/}
+            {/*                            /!*<div>{length}</div>*!/*/}
+            {/*                            /!*<div>{Object.keys(testMap).length}</div>*!/*/}
+            {/*                        </div>*/}
+            {/*                        : null}*/}
+            {/*                </div>*/}
+            {/*                /!*<div>{key}</div>*!/*/}
+            {/*                /!*<div>{value.toString()}</div>*!/*/}
+            {/*            </div>*/}
+            {/*        );*/}
+            {/*    })*/}
+            {/*    }*/}
+            {/*    /!*<div>{collapseList.toString()}</div>*!/*/}
+            {/*</div>*/}
             <br/>
 
             {/*<div key={projectKey}>*/}
@@ -726,13 +949,58 @@ const FileUploadButton = (props) => {
             <Container fluid>
                 <Row>
                     <Col>
-                        <div key={projectKey} style={{maxWidth: "380px", whiteSpace: 'pre'}}>
-                            {showPieChart ?
+                        { showPieChart ?
+                            <div key={projectKey} style={{maxWidth: "380px", whiteSpace: 'pre'}}>
                                 <h3>Total Coverage</h3>
-                                : null}
-                            {showPieChart ?
                                 <PieChartComponent />
+                                {/*{showPieChart ?*/}
+                                {/*    <div style={{maxWidth: "380px", whiteSpace: 'pre'}}>*/}
+                                {/*        <textarea style={{color: "green"}} cols="50" readOnly="true" rows={fullSelenium.split(/\r\n|\r|\n/).length}>{fullSelenium}</textarea>*/}
+                                {/*    </div>*/}
+                                {/*    : null}*/}
+                                {/*{showPieChart ?*/}
+                                {/*    <div style={{maxWidth: "380px", whiteSpace: 'pre'}}>*/}
+                                {/*        <textarea style={{color: "red"}} cols="50" readOnly="true" rows={noSelenium.split(/\r\n|\r|\n/).length}>{noSelenium}</textarea>*/}
+                                {/*    </div>*/}
+                                {/*    : null}*/}
+                                <div style={{textAlign: "center"}}>
+                                    <Button style={centerButton} variant="primary" style={{width: "100%"}} onClick={() => handleExpandAllSwagger()}>{expandStatusList[0]}</Button>
+                                </div>
+                                {Object.entries(swaggerMap).map(([key,value], index)=>{
+                                    return (
+                                        <div>
+                                            <br/>
+                                            <Button style={centerButton} variant="outline-dark" style={{width: "380px"}} onClick={() => handleCollapseSwagger(index)}>{key}</Button>
+                                            {swaggerCollapse.at(index) ?
+                                                <div>
+                                                    {/*<div>{index}</div>*/}
+                                                    {/*<div>{testingLength}</div>*/}
+                                                    <div style={styles}>{swaggerPct[index * 2].toFixed(2)}% Total Coverage</div>
+                                                    <div style={partialStyles}>{swaggerPct[index * 2 + 1].toFixed(2)}% Partial Coverage</div>
+                                                    <div style={{maxWidth: "380px", whiteSpace: 'pre'}}>
+                                                        <textarea style={{color: "green"}} cols="43" readOnly="true" rows={swaggerSplit[index * 3].split(/\r\n|\r|\n/).length - 1 | 2}>{swaggerSplit[index * 3]}</textarea>
+                                                    </div>
+                                                    <div style={{maxWidth: "380px", whiteSpace: 'pre'}}>
+                                                        <textarea style={{color: "gold"}} cols="43" readOnly="true" rows={swaggerSplit[index * 3 + 1].split(/\r\n|\r|\n/).length - 1 | 2}>{swaggerSplit[index * 3 + 1]}</textarea>
+                                                    </div>
+                                                    <div style={{maxWidth: "380px", whiteSpace: 'pre'}}>
+                                                        <textarea style={{color: "red"}} cols="43" readOnly="true" rows={swaggerSplit[index * 3 + 2].split(/\r\n|\r|\n/).length - 1 | 2}>{swaggerSplit[index * 3 + 2]}</textarea>
+                                                    </div>
+                                                </div>
+                                                : null}
+                                        </div>
+                                    );
+                                })
+                                }
+                            </div>
                             : null}
+                        {/*<div key={projectKey} style={{maxWidth: "380px", whiteSpace: 'pre'}}>*/}
+                            {/*{showPieChart ?*/}
+                            {/*    <h3>Total Coverage</h3>*/}
+                            {/*     : null}*/}
+                            {/*{showPieChart ?*/}
+                            {/*    <PieChartComponent />*/}
+                            {/* : null}*/}
                             {/*{showPieChart ?*/}
                             {/*    <div style={{maxWidth: "380px", whiteSpace: 'pre'}}>*/}
                             {/*        <textarea style={{color: "green"}} cols="50" readOnly="true" rows={fullSwagger.split(/\r\n|\r|\n/).length}>{fullSwagger}</textarea>*/}
@@ -748,41 +1016,39 @@ const FileUploadButton = (props) => {
                             {/*        <textarea style={{color: "red"}} cols="50" readOnly="true" rows={noSwagger.split(/\r\n|\r|\n/).length}>{noSwagger}</textarea>*/}
                             {/*    </div>*/}
                             {/*    : null}*/}
-                        </div>
+                        {/*</div>*/}
                     </Col>
                     <Col>
                         {showPieChart ?
                         <div key={projectKey} style={{maxWidth: "380px", whiteSpace: 'pre'}}>
                             {/*{showPieChart ?*/}
                                 <h3>Gatling</h3>
-                                {/*// : null}*/}
+                                {/* : null}*/}
                             {/*{showPieChart ?*/}
                                 <GatlingPieChart />
-                                {/*// : null}*/}
+                                {/*: null}*/}
                             {/*<div>{swaggerMap.length}</div>*/}
-                            <div>{Object.keys(swaggerMap).length}</div>
+                            {/*<div>{Object.keys(swaggerMap).length}</div>*/}
                             {/*<div>{gatlingSplit.toString()}</div>*/}
 
                             <div style={{textAlign: "center"}}>
-                                <Button variant="primary" style={{width: "380px"}} onClick={() => handleExpandAllGatling()}>{expandStatusList[1]}</Button>
+                                <Button style={centerButton} variant="primary" style={{width: "100%"}} onClick={() => handleExpandAllGatling()}>{expandStatusList[1]}</Button>
                             </div>
                             {Object.entries(swaggerMap).map(([key,value], index)=>{
                                 return (
                                     <div>
                                         <br/>
-                                        <div style={centerButton}>
-                                            <Button variant="outline-dark" style={{width: "380px"}} onClick={() => handleCollapseGatling(index)}>{key}</Button>
-                                        </div>
+                                        <Button style={centerButton} variant="outline-dark" style={{width: "380px"}} onClick={() => handleCollapseGatling(index)}>{key}</Button>
                                         {gatlingCollapse.at(index) ?
                                             <div>
                                                 {/*<div>{index}</div>*/}
                                                 {/*<div>{testingLength}</div>*/}
                                                 <div style={styles}>{gatlingPct[index].toFixed(2)}% Coverage</div>
                                                 <div style={{maxWidth: "380px", whiteSpace: 'pre'}}>
-                                                    <textarea style={{color: "green"}} cols="50" readOnly="true" rows={gatlingSplit[index * 2].split(/\r\n|\r|\n/).length - 1}>{gatlingSplit[index * 2]}</textarea>
+                                                    <textarea style={{color: "green"}} cols="43" readOnly="true" rows={gatlingSplit[index * 2].split(/\r\n|\r|\n/).length - 1 | 2}>{gatlingSplit[index * 2]}</textarea>
                                                 </div>
                                                 <div style={{maxWidth: "380px", whiteSpace: 'pre'}}>
-                                                    <textarea style={{color: "red"}} cols="50" readOnly="true" rows={gatlingSplit[index * 2 + 1].split(/\r\n|\r|\n/).length - 1}>{gatlingSplit[index * 2 + 1]}</textarea>
+                                                    <textarea style={{color: "red"}} cols="43" readOnly="true" rows={gatlingSplit[index * 2 + 1].split(/\r\n|\r|\n/).length - 1 | 2}>{gatlingSplit[index * 2 + 1]}</textarea>
                                                 </div>
                                             </div>
                                         : null}
@@ -805,13 +1071,10 @@ const FileUploadButton = (props) => {
                             : null}
                     </Col>
                     <Col>
+                        { showPieChart ?
                         <div key={projectKey} style={{maxWidth: "380px", whiteSpace: 'pre'}}>
-                            {showPieChart ?
-                                <h3>Selenium</h3>
-                                : null}
-                            {showPieChart ?
-                                <SeleniumPieChart />
-                                : null}
+                            <h3>Selenium</h3>
+                            <SeleniumPieChart />
                             {/*{showPieChart ?*/}
                             {/*    <div style={{maxWidth: "380px", whiteSpace: 'pre'}}>*/}
                             {/*        <textarea style={{color: "green"}} cols="50" readOnly="true" rows={fullSelenium.split(/\r\n|\r|\n/).length}>{fullSelenium}</textarea>*/}
@@ -822,7 +1085,33 @@ const FileUploadButton = (props) => {
                             {/*        <textarea style={{color: "red"}} cols="50" readOnly="true" rows={noSelenium.split(/\r\n|\r|\n/).length}>{noSelenium}</textarea>*/}
                             {/*    </div>*/}
                             {/*    : null}*/}
+                            <div style={{textAlign: "center"}}>
+                                <Button style={centerButton} variant="primary" style={{width: "100%"}} onClick={() => handleExpandAllSelenium()}>{expandStatusList[2]}</Button>
+                            </div>
+                            {Object.entries(swaggerMap).map(([key,value], index)=>{
+                                return (
+                                    <div>
+                                        <br/>
+                                        <Button style={centerButton} variant="outline-dark" style={{width: "380px"}} onClick={() => handleCollapseSelenium(index)}>{key}</Button>
+                                        {seleniumCollapse.at(index) ?
+                                            <div>
+                                                {/*<div>{index}</div>*/}
+                                                {/*<div>{testingLength}</div>*/}
+                                                <div style={styles}>{seleniumPct[index].toFixed(2)}% Coverage</div>
+                                                <div style={{maxWidth: "380px", whiteSpace: 'pre'}}>
+                                                    <textarea style={{color: "green"}} cols="43" readOnly="true" rows={seleniumSplit[index * 2].split(/\r\n|\r|\n/).length - 1 | 2}>{seleniumSplit[index * 2]}</textarea>
+                                                </div>
+                                                <div style={{maxWidth: "380px", whiteSpace: 'pre'}}>
+                                                    <textarea style={{color: "red"}} cols="43" readOnly="true" rows={seleniumSplit[index * 2 + 1].split(/\r\n|\r|\n/).length - 1 | 2}>{seleniumSplit[index * 2 + 1]}</textarea>
+                                                </div>
+                                            </div>
+                                            : null}
+                                    </div>
+                                );
+                            })
+                            }
                         </div>
+                            : null}
                     </Col>
                 </Row>
             </Container>
@@ -914,6 +1203,22 @@ const FileUploadButton = (props) => {
                     </Button>
                     <Button variant="success" onClick={handleDone}>
                         Done
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+
+            <Modal show={jsonBool} onHide={handleCloseJsonModal}>
+                <Modal.Header>
+                    <Modal.Title>JSON Formatted Coverage</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <div>
+                        <textarea readOnly="true" cols="50" rows="100">{jsonStr}</textarea>
+                    </div>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="primary" onClick={handleCloseJsonModal}>
+                        Ok
                     </Button>
                 </Modal.Footer>
             </Modal>
