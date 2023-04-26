@@ -14,6 +14,10 @@ let projectKey = 0
 
 const FileUploadButton = (props) => {
     const theme = props.theme
+    const hundred = {width: "100%"}
+    const three80 = {width: "380px"}
+    const max380 = {maxWidth: "380px", whiteSpace: 'pre'}
+    const alignCenter = {textAlign: "center"}
 
     const [projectZip, setProjectZip] = useState();
     const [testZip, setTestZip] = useState();
@@ -28,11 +32,11 @@ const FileUploadButton = (props) => {
 
     const [fullSwagger, setFullSwagger] = useState('')
     const [partialSwagger, setPartialSwagger] = useState('')
-    const [noSwagger, setNoSwagger] = useState('')
+    // const [noSwagger, setNoSwagger] = useState('')
     const [fullGatling, setFullGatling] = useState('')
-    const [noGatling, setNoGatling] = useState('')
+    // const [noGatling, setNoGatling] = useState('')
     const [fullSelenium, setFullSelenium] = useState('')
-    const [noSelenium, setNoSelenium] = useState('')
+    // const [noSelenium, setNoSelenium] = useState('')
 
     const [showField, setShowField] = useState(false)
     const [showRegex, setShowRegex] = useState(false)
@@ -582,15 +586,15 @@ const FileUploadButton = (props) => {
             setPartialSwagger(responseString);
         }).catch((err) => console.error(err))
 
-        await axios.get("http://localhost:8080/tests/coverage/getNoSwagger")
-            .then((res) => {
-                console.log(res.data)
-                //setResults(res.data)
-                const responseString = res.data.reduce((acc, obj) => {
-                    return acc + `${obj}\n`
-                }, '')
-                setNoSwagger(responseString);
-            }).catch((err) => console.error(err))
+        // await axios.get("http://localhost:8080/tests/coverage/getNoSwagger")
+        //     .then((res) => {
+        //         console.log(res.data)
+        //         //setResults(res.data)
+        //         const responseString = res.data.reduce((acc, obj) => {
+        //             return acc + `${obj}\n`
+        //         }, '')
+        //         setNoSwagger(responseString);
+        //     }).catch((err) => console.error(err))
 
         await axios.get("http://localhost:8080/tests/coverage/getFullGatling")
             .then((res) => {
@@ -602,15 +606,15 @@ const FileUploadButton = (props) => {
                 setFullGatling(responseString);
             }).catch((err) => console.error(err))
 
-        await axios.get("http://localhost:8080/tests/coverage/getNoGatling")
-            .then((res) => {
-                console.log(res.data)
-                //setResults(res.data)
-                const responseString = res.data.reduce((acc, obj) => {
-                    return acc + `${obj}\n`
-                }, '')
-                setNoGatling(responseString);
-            }).catch((err) => console.error(err))
+        // await axios.get("http://localhost:8080/tests/coverage/getNoGatling")
+        //     .then((res) => {
+        //         console.log(res.data)
+        //         //setResults(res.data)
+        //         const responseString = res.data.reduce((acc, obj) => {
+        //             return acc + `${obj}\n`
+        //         }, '')
+        //         setNoGatling(responseString);
+        //     }).catch((err) => console.error(err))
 
         await axios.get("http://localhost:8080/tests/coverage/getFullSelenium")
             .then((res) => {
@@ -622,15 +626,15 @@ const FileUploadButton = (props) => {
                 setFullSelenium(responseString);
             }).catch((err) => console.error(err))
 
-        await axios.get("http://localhost:8080/tests/coverage/getNoSelenium")
-            .then((res) => {
-                console.log(res.data)
-                //setResults(res.data)
-                const responseString = res.data.reduce((acc, obj) => {
-                    return acc + `${obj}\n`
-                }, '')
-                setNoSelenium(responseString);
-            }).catch((err) => console.error(err))
+        // await axios.get("http://localhost:8080/tests/coverage/getNoSelenium")
+        //     .then((res) => {
+        //         console.log(res.data)
+        //         //setResults(res.data)
+        //         const responseString = res.data.reduce((acc, obj) => {
+        //             return acc + `${obj}\n`
+        //         }, '')
+        //         setNoSelenium(responseString);
+        //     }).catch((err) => console.error(err))
 
         // await axios.get("http://localhost:8080/tests/coverage/getTestMap")
         //     .then((res) => {
@@ -722,30 +726,30 @@ const FileUploadButton = (props) => {
                 <Row>
                     <Col>
                         { showPieChart ?
-                            <div key={projectKey} style={{maxWidth: "380px", whiteSpace: 'pre'}}>
+                            <div key={projectKey} style={max380}>
                                 <h3>Total Coverage</h3>
                                 <PieChartComponent />
-                                <div style={{textAlign: "center"}}>
-                                    <Button style={centerButton} variant="primary" style={{width: "100%"}} onClick={() => handleExpandAllSwagger()}>{expandStatusList[0]}</Button>
+                                <div style={alignCenter}>
+                                    <Button style={centerButton} variant="primary" style={hundred} onClick={() => handleExpandAllSwagger()}>{expandStatusList[0]}</Button>
                                 </div>
                                 {Object.entries(swaggerMap).map(([key,value], index)=>{
                                     return (
                                         <div>
                                             <br/>
-                                            <Button style={centerButton} variant="outline-dark" style={{width: "380px"}} onClick={() => handleCollapseSwagger(index)}>{key}</Button>
+                                            <Button style={centerButton} variant="outline-dark" style={three80} onClick={() => handleCollapseSwagger(index)}>{key}</Button>
                                             {swaggerCollapse.at(index) ?
                                                 <div>
                                                     {/*<div>{index}</div>*/}
                                                     {/*<div>{testingLength}</div>*/}
                                                     <div style={styles}>{swaggerPct[index * 2].toFixed(2)}% Total Coverage</div>
                                                     <div style={partialStyles}>{swaggerPct[index * 2 + 1].toFixed(2)}% Partial Coverage</div>
-                                                    <div style={{maxWidth: "380px", whiteSpace: 'pre'}}>
+                                                    <div style={max380}>
                                                         <textarea style={{color: "green"}} cols="43" readOnly="true" rows={swaggerSplit[index * 3].split(/\r\n|\r|\n/).length - 1 | 2}>{swaggerSplit[index * 3]}</textarea>
                                                     </div>
-                                                    <div style={{maxWidth: "380px", whiteSpace: 'pre'}}>
+                                                    <div style={max380}>
                                                         <textarea style={{color: "gold"}} cols="43" readOnly="true" rows={swaggerSplit[index * 3 + 1].split(/\r\n|\r|\n/).length - 1 | 2}>{swaggerSplit[index * 3 + 1]}</textarea>
                                                     </div>
-                                                    <div style={{maxWidth: "380px", whiteSpace: 'pre'}}>
+                                                    <div style={max380}>
                                                         <textarea style={{color: "red"}} cols="43" readOnly="true" rows={swaggerSplit[index * 3 + 2].split(/\r\n|\r|\n/).length - 1 | 2}>{swaggerSplit[index * 3 + 2]}</textarea>
                                                     </div>
                                                 </div>
@@ -759,25 +763,25 @@ const FileUploadButton = (props) => {
                     </Col>
                     <Col>
                         {showPieChart ?
-                        <div key={projectKey} style={{maxWidth: "380px", whiteSpace: 'pre'}}>
+                        <div key={projectKey} style={max380}>
                                 <h3>Gatling</h3>
                                 <GatlingPieChart />
 
                             <div style={{textAlign: "center"}}>
-                                <Button style={centerButton} variant="primary" style={{width: "100%"}} onClick={() => handleExpandAllGatling()}>{expandStatusList[1]}</Button>
+                                <Button style={centerButton} variant="primary" style={hundred} onClick={() => handleExpandAllGatling()}>{expandStatusList[1]}</Button>
                             </div>
                             {Object.entries(swaggerMap).map(([key,value], index)=>{
                                 return (
                                     <div>
                                         <br/>
-                                        <Button style={centerButton} variant="outline-dark" style={{width: "380px"}} onClick={() => handleCollapseGatling(index)}>{key}</Button>
+                                        <Button style={centerButton} variant="outline-dark" style={three80} onClick={() => handleCollapseGatling(index)}>{key}</Button>
                                         {gatlingCollapse.at(index) ?
                                             <div>
                                                 <div style={styles}>{gatlingPct[index].toFixed(2)}% Coverage</div>
-                                                <div style={{maxWidth: "380px", whiteSpace: 'pre'}}>
+                                                <div style={max380}>
                                                     <textarea style={{color: "green"}} cols="43" readOnly="true" rows={gatlingSplit[index * 2].split(/\r\n|\r|\n/).length - 1 | 2}>{gatlingSplit[index * 2]}</textarea>
                                                 </div>
-                                                <div style={{maxWidth: "380px", whiteSpace: 'pre'}}>
+                                                <div style={max380}>
                                                     <textarea style={{color: "red"}} cols="43" readOnly="true" rows={gatlingSplit[index * 2 + 1].split(/\r\n|\r|\n/).length - 1 | 2}>{gatlingSplit[index * 2 + 1]}</textarea>
                                                 </div>
                                             </div>
@@ -792,24 +796,24 @@ const FileUploadButton = (props) => {
                     </Col>
                     <Col>
                         { showPieChart ?
-                        <div key={projectKey} style={{maxWidth: "380px", whiteSpace: 'pre'}}>
+                        <div key={projectKey} style={max380}>
                             <h3>Selenium</h3>
                             <SeleniumPieChart />
                             <div style={{textAlign: "center"}}>
-                                <Button style={centerButton} variant="primary" style={{width: "100%"}} onClick={() => handleExpandAllSelenium()}>{expandStatusList[2]}</Button>
+                                <Button style={centerButton} variant="primary" style={hundred} onClick={() => handleExpandAllSelenium()}>{expandStatusList[2]}</Button>
                             </div>
                             {Object.entries(swaggerMap).map(([key,value], index)=>{
                                 return (
                                     <div>
                                         <br/>
-                                        <Button style={centerButton} variant="outline-dark" style={{width: "380px"}} onClick={() => handleCollapseSelenium(index)}>{key}</Button>
+                                        <Button style={centerButton} variant="outline-dark" style={three80} onClick={() => handleCollapseSelenium(index)}>{key}</Button>
                                         {seleniumCollapse.at(index) ?
                                             <div>
                                                 <div style={styles}>{seleniumPct[index].toFixed(2)}% Coverage</div>
-                                                <div style={{maxWidth: "380px", whiteSpace: 'pre'}}>
+                                                <div style={max380}>
                                                     <textarea style={{color: "green"}} cols="43" readOnly="true" rows={seleniumSplit[index * 2].split(/\r\n|\r|\n/).length - 1 | 2}>{seleniumSplit[index * 2]}</textarea>
                                                 </div>
-                                                <div style={{maxWidth: "380px", whiteSpace: 'pre'}}>
+                                                <div style={max380}>
                                                     <textarea style={{color: "red"}} cols="43" readOnly="true" rows={seleniumSplit[index * 2 + 1].split(/\r\n|\r|\n/).length - 1 | 2}>{seleniumSplit[index * 2 + 1]}</textarea>
                                                 </div>
                                             </div>
