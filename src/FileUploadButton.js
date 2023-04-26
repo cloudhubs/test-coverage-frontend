@@ -2,8 +2,7 @@ import React, {ChangeEvent, useState} from 'react';
 import axios from "axios"
 import {Button, Modal, Tab, Tabs} from 'react-bootstrap'
 import ClipLoader from "react-spinners/ClipLoader";
-import {pieData} from "./PieChartComponent";
-import PieChartComponent from "./PieChartComponent";
+import PieChartComponent, {pieData} from "./PieChartComponent";
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -11,12 +10,12 @@ import GatlingPieChart, {gatlingData} from "./GatlingPieChart";
 import SeleniumPieChart, {seleniumData} from "./SeleniumPieChart";
 import RegexInput from "./RegexInput";
 
-let key = 0
+let projectKey = 0
 
 const FileUploadButton = (props) => {
     const theme = props.theme
-    // const widthNum = window.innerWidth / 3 - 100
-    // const width = widthNum.toString() + "px"
+    const max380 = {maxWidth: "380px", whiteSpace: 'pre'}
+    const alignCenter = {textAlign: "center"}
 
     const [projectZip, setProjectZip] = useState();
     const [testZip, setTestZip] = useState();
@@ -31,11 +30,11 @@ const FileUploadButton = (props) => {
 
     const [fullSwagger, setFullSwagger] = useState('')
     const [partialSwagger, setPartialSwagger] = useState('')
-    const [noSwagger, setNoSwagger] = useState('')
+    // const [noSwagger, setNoSwagger] = useState('')
     const [fullGatling, setFullGatling] = useState('')
-    const [noGatling, setNoGatling] = useState('')
+    // const [noGatling, setNoGatling] = useState('')
     const [fullSelenium, setFullSelenium] = useState('')
-    const [noSelenium, setNoSelenium] = useState('')
+    // const [noSelenium, setNoSelenium] = useState('')
 
     const [showField, setShowField] = useState(false)
     const [showRegex, setShowRegex] = useState(false)
@@ -44,6 +43,25 @@ const FileUploadButton = (props) => {
     const [regex, setRegex] = useState([''])
     const maxRegex = 10;
     const [regexErrorText, setRegexErrorText] = useState('')
+
+    /** Map stuffs */
+    const [swaggerMap, setSwaggerMap] = useState([])
+    const [swaggerCollapse, setSwaggerCollapse] = useState([])
+    const [gatlingCollapse, setGatlingCollapse] = useState([])
+    const [seleniumCollapse, setSeleniumCollapse] = useState([])
+    const [expandAllList, setExpandAllList] = useState([false, false, false])
+    const [textExpand, setTextExpand] = useState([false, false, false])
+    const [expandStatusList, setExpandStatusList] = useState(Array(3).fill("Expand All"))
+    const [gatlingSplit, setGatlingSplit] = useState([''])
+    const [seleniumSplit, setSeleniumSplit] = useState([''])
+    const [swaggerSplit, setSwaggerSplit] = useState([''])
+    const [gatlingPct, setGatlingPct] = useState([])
+    const [seleniumPct, setSeleniumPct] = useState([])
+    const [swaggerPct, setSwaggerPct] = useState([])
+
+    const [jsonStr, setJsonStr] = useState('')
+    const [jsonButton] = useState('JSON')
+    const [jsonBool, setJsonBool] = useState(false)
 
     const fieldPrompt = "Field:  "
 
@@ -70,19 +88,27 @@ const FileUploadButton = (props) => {
         setField('')
         setShowField(true)
         setRegex([''])
+        setExpandStatusList(Array(3).fill("Expand All"))
+        setTextExpand([false, false, false])
+
+        setSwaggerCollapse(Array(Object.keys(swaggerMap).length).fill(false))
+        setGatlingCollapse(Array(Object.keys(swaggerMap).length).fill(false))
+        setSeleniumCollapse(Array(Object.keys(swaggerMap).length).fill(false))
+
+        setExpandAllList([false, false, false])
         // setLoading(true)
         // sendFiles()
-        //handleShow()
+        // handleShow()
     };
 
     const handleClose = () => {
-        key=key+1
+        projectKey=projectKey+1
         setShow(false)
         setShowPieChart(true)
     }
 
     const handleFieldClose = () => {
-        key=key+1
+        projectKey=projectKey+1
         setShowField(false)
         setShowRegex(false)
     }
@@ -127,8 +153,9 @@ const FileUploadButton = (props) => {
         // await timeout(3000);
         // setShow(true)
         setLoading(false)
-        key=key+1
+        projectKey=projectKey+1
         setShowPieChart(true)
+
         //key=key+1
         //setShowPieChart(true)
     }
@@ -146,6 +173,35 @@ const FileUploadButton = (props) => {
         values.push('');
         setRegex(values);
     };
+
+    const styles = {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        color: 'green',
+        // height: '100vh',
+    };
+
+    const partialStyles = {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        color: 'gold',
+    };
+
+    const centerButton = {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: '100%',
+    }
+
+    const centerButton380 = {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: '380px',
+    }
 
     const handleDelete = (event, index) => {
         const values = [...regex];
@@ -169,6 +225,249 @@ const FileUploadButton = (props) => {
             }
         }
     };
+
+    const prettifyJSON = (str) => {
+        try {
+            const json = JSON.parse(str);
+            const prettified = JSON.stringify(json, null, 2);
+            setJsonStr(prettified)
+        } catch (error) {
+            console.error(error)
+        }
+    }
+
+    const handleCloseJsonModal = () => {
+        // prettifyJSON();
+        setJsonBool(false);
+    }
+
+    const handleExpandAllGatling = () => {
+        if (textExpand[1] === false) {
+            let rn = textExpand
+            rn[1] = true;
+            setTextExpand(rn)
+            handleGatlingLists()
+        }
+
+        let expanded = expandAllList
+        expanded[1] = !expanded[1]
+        setExpandAllList(expanded)
+        let current = [...gatlingCollapse]
+        current.fill(expanded[1])
+
+        let currentStatus = [...expandStatusList]
+
+        if (currentStatus[1].toString() === "Expand All") {
+            currentStatus[1] = "Collapse All"
+        } else {
+            currentStatus[1] = "Expand All"
+        }
+        setExpandStatusList(currentStatus)
+
+        setGatlingCollapse(current)
+    }
+
+    const handleExpandAllSelenium = () => {
+        if (textExpand[2] === false) {
+            let rn = textExpand
+            rn[2] = true;
+            setTextExpand(rn)
+            handleSeleniumLists()
+        }
+
+        let expanded = expandAllList
+        expanded[2] = !expanded[2]
+        setExpandAllList(expanded)
+        let current = [...seleniumCollapse]
+        current.fill(expanded[2])
+
+        let currentStatus = [...expandStatusList]
+
+        if (currentStatus[2].toString() === "Expand All") {
+            currentStatus[2] = "Collapse All"
+        } else {
+            currentStatus[2] = "Expand All"
+        }
+        setExpandStatusList(currentStatus)
+
+        setSeleniumCollapse(current)
+    }
+
+    const handleExpandAllSwagger = () => {
+        if (textExpand[0] === false) {
+            let rn = textExpand
+            rn[0] = true;
+            setTextExpand(rn)
+            handleSwaggerLists()
+        }
+
+        let expanded = expandAllList
+        expanded[0] = !expanded[0]
+        setExpandAllList(expanded)
+        let current = [...swaggerCollapse]
+        current.fill(expanded[0])
+
+        let currentStatus = [...expandStatusList]
+
+        if (currentStatus[0].toString() === "Expand All") {
+            currentStatus[0] = "Collapse All"
+        } else {
+            currentStatus[0] = "Expand All"
+        }
+        setExpandStatusList(currentStatus)
+
+        setSwaggerCollapse(current)
+    }
+
+    const handleCollapseGatling = (index) => {
+        if (textExpand[1] === false) {
+            // setTextExpand(true)
+            let rn = textExpand
+            rn[1] = true;
+            setTextExpand(rn);
+            handleGatlingLists()
+        }
+
+        let current = [...gatlingCollapse]
+        let update = current[index]
+        current[index] = !update
+
+        setGatlingCollapse(current)
+    }
+
+    const handleCollapseSelenium = (index) => {
+        if (textExpand[2] === false) {
+            let rn = textExpand
+            rn[2] = true;
+            setTextExpand(rn)
+            handleSeleniumLists()
+        }
+
+        let current = [...seleniumCollapse]
+        let update = current[index]
+        current[index] = !update
+
+        setSeleniumCollapse(current)
+    }
+
+    const handleCollapseSwagger = (index) => {
+        if (textExpand[0] === false) {
+            let rn = textExpand
+            rn[0] = true;
+            setTextExpand(rn)
+            handleSwaggerLists()
+        }
+
+        let current = [...swaggerCollapse]
+        let update = current[index]
+        current[index] = !update
+
+        setSwaggerCollapse(current)
+    }
+
+
+    const handleGatlingLists = () => {
+        let counter = 0
+        let arr = Array(Object.keys(swaggerMap).length * 2).fill('')
+        let pct = Array(Object.keys(swaggerMap).length).fill(0.0)
+
+        for (const [key, value] of Object.entries(swaggerMap)) {
+            if (key !== '') {
+                let localTested = ''
+                let testNum = 0
+                let localNot = ''
+                let notNum = 0
+
+                for (const currentVal of value) {
+                    if (fullGatling.includes(currentVal)) {
+                        localTested = localTested + currentVal + '\n'
+                        testNum += 1
+                    } else {
+                        localNot = localNot + currentVal + '\n'
+                        notNum += 1
+                    }
+                }
+                arr[counter] = localTested
+                arr[counter + 1] = localNot
+                pct[counter / 2] = (testNum * 100) / (testNum + notNum)
+                counter += 2
+            }
+        }
+
+        setGatlingSplit(arr)
+        setGatlingPct(pct)
+    }
+
+    const handleSeleniumLists = () => {
+        let counter = 0
+        let arr = Array(Object.keys(swaggerMap).length * 2).fill('')
+        let pct = Array(Object.keys(swaggerMap).length).fill(0.0)
+
+        for (const [key, value] of Object.entries(swaggerMap)) {
+            if (key !== '') {
+                let localTested = ''
+                let testNum = 0
+                let localNot = ''
+                let notNum = 0
+
+                for (const currentVal of value) {
+                    if (fullSelenium.includes(currentVal)) {
+                        localTested = localTested + currentVal + '\n'
+                        testNum += 1
+                    } else {
+                        localNot = localNot + currentVal + '\n'
+                        notNum += 1
+                    }
+                }
+                arr[counter] = localTested
+                arr[counter + 1] = localNot
+                pct[counter / 2] = (testNum * 100) / (testNum + notNum)
+                counter += 2
+            }
+        }
+
+        setSeleniumSplit(arr)
+        setSeleniumPct(pct)
+    }
+
+    const handleSwaggerLists = () => {
+        let counter = 0
+        let arr = Array(Object.keys(swaggerMap).length * 3).fill('')
+        let pct = Array(Object.keys(swaggerMap).length * 2).fill(0.0)
+
+        for (const [key, value] of Object.entries(swaggerMap)) {
+            if (key !== '') {
+                let localFullTested = ''
+                let fullNum = 0
+                let localPartialTested = ''
+                let partialNum = 0
+                let localNot = ''
+                let notNum = 0
+
+                for (const currentVal of value) {
+                    if (fullSwagger.includes(currentVal)) {
+                        localFullTested = localFullTested + currentVal + '\n'
+                        fullNum += 1
+                    } else if (partialSwagger.includes(currentVal)) {
+                        localPartialTested = localPartialTested + currentVal + '\n'
+                        partialNum += 1
+                    } else {
+                        localNot = localNot + currentVal + '\n'
+                        notNum += 1
+                    }
+                }
+                arr[counter] = localFullTested
+                arr[counter + 1] = localPartialTested
+                arr[counter + 2] = localNot
+                pct[(counter / 3) * 2] = (fullNum * 100) / (partialNum + fullNum + notNum)
+                pct[(counter / 3) * 2 + 1] = (partialNum * 100) / (partialNum + fullNum + notNum)
+                counter += 3
+            }
+        }
+
+        setSwaggerSplit(arr)
+        setSwaggerPct(pct)
+    }
 
     const sendFiles = async() => {
         //send file to backend to get the results
@@ -224,7 +523,6 @@ const FileUploadButton = (props) => {
             .then((response) => {
             console.log(response);
         });
-            // .catch((err) => console.error(err))
 
         await axios.post("http://localhost:8080/requests/logs/regexList", regex)
             .then((response) => {
@@ -299,15 +597,15 @@ const FileUploadButton = (props) => {
             setPartialSwagger(responseString);
         }).catch((err) => console.error(err))
 
-        await axios.get("http://localhost:8080/tests/coverage/getNoSwagger")
-            .then((res) => {
-                console.log(res.data)
-                //setResults(res.data)
-                const responseString = res.data.reduce((acc, obj) => {
-                    return acc + `${obj}\n`
-                }, '')
-                setNoSwagger(responseString);
-            }).catch((err) => console.error(err))
+        // await axios.get("http://localhost:8080/tests/coverage/getNoSwagger")
+        //     .then((res) => {
+        //         console.log(res.data)
+        //         //setResults(res.data)
+        //         const responseString = res.data.reduce((acc, obj) => {
+        //             return acc + `${obj}\n`
+        //         }, '')
+        //         setNoSwagger(responseString);
+        //     }).catch((err) => console.error(err))
 
         await axios.get("http://localhost:8080/tests/coverage/getFullGatling")
             .then((res) => {
@@ -319,15 +617,15 @@ const FileUploadButton = (props) => {
                 setFullGatling(responseString);
             }).catch((err) => console.error(err))
 
-        await axios.get("http://localhost:8080/tests/coverage/getNoGatling")
-            .then((res) => {
-                console.log(res.data)
-                //setResults(res.data)
-                const responseString = res.data.reduce((acc, obj) => {
-                    return acc + `${obj}\n`
-                }, '')
-                setNoGatling(responseString);
-            }).catch((err) => console.error(err))
+        // await axios.get("http://localhost:8080/tests/coverage/getNoGatling")
+        //     .then((res) => {
+        //         console.log(res.data)
+        //         //setResults(res.data)
+        //         const responseString = res.data.reduce((acc, obj) => {
+        //             return acc + `${obj}\n`
+        //         }, '')
+        //         setNoGatling(responseString);
+        //     }).catch((err) => console.error(err))
 
         await axios.get("http://localhost:8080/tests/coverage/getFullSelenium")
             .then((res) => {
@@ -339,24 +637,56 @@ const FileUploadButton = (props) => {
                 setFullSelenium(responseString);
             }).catch((err) => console.error(err))
 
-        await axios.get("http://localhost:8080/tests/coverage/getNoSelenium")
+        // await axios.get("http://localhost:8080/tests/coverage/getNoSelenium")
+        //     .then((res) => {
+        //         console.log(res.data)
+        //         //setResults(res.data)
+        //         const responseString = res.data.reduce((acc, obj) => {
+        //             return acc + `${obj}\n`
+        //         }, '')
+        //         setNoSelenium(responseString);
+        //     }).catch((err) => console.error(err))
+
+        // await axios.get("http://localhost:8080/tests/coverage/getTestMap")
+        //     .then((res) => {
+        //         console.log(res.data)
+        //
+        //         setTestMap(res.data);
+        //
+        //         /** Good */
+        //         setKeyList(Object.keys(res.data));
+        //         setTestMapString("test2");
+        //         setCollapseList(Array(Object.keys(res.data).length).fill(false))
+        //
+        //
+        //         Object.keys(res.data).map((current) => {
+        //             return (
+        //                 setValueList([...valueList, res.data[current]])
+        //             );
+        //         })
+        //
+        //     }).catch((err) => console.error(err))
+
+        await axios.get("http://localhost:8080/tests/coverage/getSwaggerMap")
             .then((res) => {
                 console.log(res.data)
-                //setResults(res.data)
-                const responseString = res.data.reduce((acc, obj) => {
-                    return acc + `${obj}\n`
-                }, '')
-                setNoSelenium(responseString);
+
+                setSwaggerMap(res.data)
+
+                setSwaggerCollapse(Array(Object.keys(res.data).length).fill(false))
+                setGatlingCollapse(Array(Object.keys(res.data).length).fill(false))
+                setSeleniumCollapse(Array(Object.keys(res.data).length).fill(false))
             }).catch((err) => console.error(err))
 
-        // setLoading(false)
+        await axios.get("http://localhost:8080/tests/coverage/getJsonCoverage")
+            .then((res) => {
+                console.log(res.data)
+                prettifyJSON(res.data + '}')
+            }).catch((err) => console.error(err))
+
         handleShow()
 
-        // setLoading(false)
         handleShow()
-
-        // setShow(false)
-        // await timeout(1000);
 
         this.forceUpdate()
     }
@@ -391,78 +721,121 @@ const FileUploadButton = (props) => {
                 aria-label="Loading Spinner"
                 data-testid="loader"
             />
-            {/*<div>*/}
-            {/*    {regex.map((current) =>*/}
-            {/*        <div>{current}</div>*/}
-            {/*    )}*/}
-            {/*</div>*/}
+
+            <br/>
+            {showPieChart ?
+                <div>
+                    <br/>
+                    <Button variant="secondary" onClick={() => setJsonBool(true)}>{jsonButton}</Button>
+                </div>
+                : null}
+
+
+            <br/>
 
             <Container fluid>
                 <Row>
                     <Col>
-                        <div key={key} style={{maxWidth: "380px", whiteSpace: 'pre'}}>
-                            {showPieChart ?
+                        { showPieChart ?
+                            <div key={projectKey} style={max380}>
                                 <h3>Total Coverage</h3>
-                                : null}
-                            {showPieChart ?
                                 <PieChartComponent />
+                                <div style={alignCenter}>
+                                    <Button style={centerButton} variant="primary" onClick={() => handleExpandAllSwagger()}>{expandStatusList[0]}</Button>
+                                </div>
+                                {Object.entries(swaggerMap).map(([key,value], index)=>{
+                                    return (
+                                        <div>
+                                            <br/>
+                                            <Button style={centerButton380} variant="outline-dark" onClick={() => handleCollapseSwagger(index)}>{key}</Button>
+                                            {swaggerCollapse.at(index) ?
+                                                <div>
+                                                    {/*<div>{index}</div>*/}
+                                                    {/*<div>{testingLength}</div>*/}
+                                                    <div style={styles}>{swaggerPct[index * 2].toFixed(2)}% Total Coverage</div>
+                                                    <div style={partialStyles}>{swaggerPct[index * 2 + 1].toFixed(2)}% Partial Coverage</div>
+                                                    <div style={max380}>
+                                                        <textarea style={{color: "green"}} cols="43" readOnly="true" rows={swaggerSplit[index * 3].split(/\r\n|\r|\n/).length - 1 | 2}>{swaggerSplit[index * 3]}</textarea>
+                                                    </div>
+                                                    <div style={max380}>
+                                                        <textarea style={{color: "gold"}} cols="43" readOnly="true" rows={swaggerSplit[index * 3 + 1].split(/\r\n|\r|\n/).length - 1 | 2}>{swaggerSplit[index * 3 + 1]}</textarea>
+                                                    </div>
+                                                    <div style={max380}>
+                                                        <textarea style={{color: "red"}} cols="43" readOnly="true" rows={swaggerSplit[index * 3 + 2].split(/\r\n|\r|\n/).length - 1 | 2}>{swaggerSplit[index * 3 + 2]}</textarea>
+                                                    </div>
+                                                </div>
+                                                : null}
+                                        </div>
+                                    );
+                                })
+                                }
+                            </div>
                             : null}
-                            {showPieChart ?
-                                <div style={{maxWidth: "380px", whiteSpace: 'pre'}}>
-                                    <textarea style={{color: "green"}} cols="50" readOnly="true" rows={fullSwagger.split(/\r\n|\r|\n/).length}>{fullSwagger}</textarea>
-                                </div>
-                                : null}
-                            {showPieChart ?
-                                <div style={{maxWidth: "380px", whiteSpace: 'pre'}}>
-                                    <textarea style={{color: "gold"}} cols="50" readOnly="true" rows={partialSwagger.split(/\r\n|\r|\n/).length}>{partialSwagger}</textarea>
-                                </div>
-                                : null}
-                            {showPieChart ?
-                                <div style={{maxWidth: "380px", whiteSpace: 'pre'}}>
-                                    <textarea style={{color: "red"}} cols="50" readOnly="true" rows={noSwagger.split(/\r\n|\r|\n/).length}>{noSwagger}</textarea>
-                                </div>
-                                : null}
-                        </div>
                     </Col>
                     <Col>
-                        <div key={key} style={{maxWidth: "380px", whiteSpace: 'pre'}}>
-                            {showPieChart ?
+                        {showPieChart ?
+                        <div key={projectKey} style={max380}>
                                 <h3>Gatling</h3>
-                                : null}
-                            {showPieChart ?
                                 <GatlingPieChart />
-                                : null}
-                            {showPieChart ?
-                                <div style={{maxWidth: "380px", whiteSpace: 'pre'}}>
-                                    <textarea style={{color: "green"}} cols="50" readOnly="true" rows={fullGatling.split(/\r\n|\r|\n/).length}>{fullGatling}</textarea>
-                                </div>
-                                : null}
-                            {showPieChart ?
-                                <div style={{maxWidth: "380px", whiteSpace: 'pre'}}>
-                                    <textarea style={{color: "red"}} cols="50" readOnly="true" rows={noGatling.split(/\r\n|\r|\n/).length}>{noGatling}</textarea>
-                                </div>
-                                : null}
+
+                            <div style={{textAlign: "center"}}>
+                                <Button style={centerButton} variant="primary" onClick={() => handleExpandAllGatling()}>{expandStatusList[1]}</Button>
+                            </div>
+                            {Object.entries(swaggerMap).map(([key,value], index)=>{
+                                return (
+                                    <div>
+                                        <br/>
+                                        <Button style={centerButton380} variant="outline-dark" onClick={() => handleCollapseGatling(index)}>{key}</Button>
+                                        {gatlingCollapse.at(index) ?
+                                            <div>
+                                                <div style={styles}>{gatlingPct[index].toFixed(2)}% Coverage</div>
+                                                <div style={max380}>
+                                                    <textarea style={{color: "green"}} cols="43" readOnly="true" rows={gatlingSplit[index * 2].split(/\r\n|\r|\n/).length - 1 | 2}>{gatlingSplit[index * 2]}</textarea>
+                                                </div>
+                                                <div style={max380}>
+                                                    <textarea style={{color: "red"}} cols="43" readOnly="true" rows={gatlingSplit[index * 2 + 1].split(/\r\n|\r|\n/).length - 1 | 2}>{gatlingSplit[index * 2 + 1]}</textarea>
+                                                </div>
+                                            </div>
+                                        : null}
+                                    </div>
+                                );
+                            })
+                            }
+
                         </div>
+                            : null}
                     </Col>
                     <Col>
-                        <div key={key} style={{maxWidth: "380px", whiteSpace: 'pre'}}>
-                            {showPieChart ?
-                                <h3>Selenium</h3>
-                                : null}
-                            {showPieChart ?
-                                <SeleniumPieChart />
-                                : null}
-                            {showPieChart ?
-                                <div style={{maxWidth: "380px", whiteSpace: 'pre'}}>
-                                    <textarea style={{color: "green"}} cols="50" readOnly="true" rows={fullSelenium.split(/\r\n|\r|\n/).length}>{fullSelenium}</textarea>
-                                </div>
-                                : null}
-                            {showPieChart ?
-                                <div style={{maxWidth: "380px", whiteSpace: 'pre'}}>
-                                    <textarea style={{color: "red"}} cols="50" readOnly="true" rows={noSelenium.split(/\r\n|\r|\n/).length}>{noSelenium}</textarea>
-                                </div>
-                                : null}
+                        { showPieChart ?
+                        <div key={projectKey} style={max380}>
+                            <h3>Selenium</h3>
+                            <SeleniumPieChart />
+                            <div style={{textAlign: "center"}}>
+                                <Button style={centerButton} variant="primary" onClick={() => handleExpandAllSelenium()}>{expandStatusList[2]}</Button>
+                            </div>
+                            {Object.entries(swaggerMap).map(([key,value], index)=>{
+                                return (
+                                    <div>
+                                        <br/>
+                                        <Button style={centerButton380} variant="outline-dark" onClick={() => handleCollapseSelenium(index)}>{key}</Button>
+                                        {seleniumCollapse.at(index) ?
+
+                                            <div>
+                                                <div style={styles}>{seleniumPct[index].toFixed(2)}% Coverage</div>
+                                                <div style={max380}>
+                                                    <textarea style={{color: "green"}} cols="43" readOnly="true" rows={seleniumSplit[index * 2].split(/\r\n|\r|\n/).length - 1 | 2}>{seleniumSplit[index * 2]}</textarea>
+                                                </div>
+                                                <div style={max380}>
+                                                    <textarea style={{color: "red"}} cols="43" readOnly="true" rows={seleniumSplit[index * 2 + 1].split(/\r\n|\r|\n/).length - 1 | 2}>{seleniumSplit[index * 2 + 1]}</textarea>
+                                                </div>
+                                            </div>
+                                            : null}
+                                    </div>
+                                );
+                            })
+                            }
                         </div>
+                            : null}
                     </Col>
                 </Row>
             </Container>
@@ -475,7 +848,6 @@ const FileUploadButton = (props) => {
                     <form>
                         <label>
                             {fieldPrompt}
-                            {/*<textarea value={field} onChange={handleFieldChange}></textarea>*/}
                             <input value={field} onChange={handleFieldChange}/>
                         </label>
                     </form>
@@ -500,12 +872,6 @@ const FileUploadButton = (props) => {
                 </Modal.Header>
                 <Modal.Body>
                     <form>
-                        {/*<label>*/}
-                        {/*    {fieldPrompt}*/}
-                        {/*    test*/}
-                        {/*    <textarea value={field} onChange={handleFieldChange}></textarea>*/}
-                        {/*    <input value={field} onChange={handleFieldChange}/>*/}
-                        {/*</label>*/}
                         {regex.map((obj, index) => (
                             <div className="whole-input">
                                 <div className="input-box">
@@ -518,28 +884,10 @@ const FileUploadButton = (props) => {
                                         regex={regex}
                                     />
                                 </div>
-                                <div className="error-text">
-                                    {/*{regexErrorText[index]}*/}
-                                    {/*<h8 style={{ color: 'red' }}>{regexErrorText}</h8>*/}
-                                </div>
                             </div>
                         ))}
                         <h8 style={{ color: 'red' }}>{regexErrorText}</h8>
                     </form>
-
-                    <div>
-                        {/*{regex.toString()}*/}
-                        {/*{regex.map((current) =>*/}
-                        {/*    <div>*/}
-                        {/*        <input value={current} onChange={handleRegexChange}/>*/}
-                        {/*        <Button variant="danger" onClick={handleDelete} disabled={regex.length <= 1}>*/}
-                        {/*            Delete*/}
-                        {/*        </Button>*/}
-                        {/*    </div>*/}
-                        {/*)}*/}
-                    </div>
-
-
 
                     <Button variant="warning" disabled={regex.length >= maxRegex} onClick={handleAdd}>
                         Add
@@ -554,6 +902,22 @@ const FileUploadButton = (props) => {
                     </Button>
                     <Button variant="success" onClick={handleDone}>
                         Done
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+
+            <Modal show={jsonBool} onHide={handleCloseJsonModal}>
+                <Modal.Header>
+                    <Modal.Title>JSON Formatted Coverage</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <div>
+                        <textarea readOnly="true" cols="50" rows="100">{jsonStr}</textarea>
+                    </div>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="primary" onClick={handleCloseJsonModal}>
+                        Ok
                     </Button>
                 </Modal.Footer>
             </Modal>
