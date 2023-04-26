@@ -14,7 +14,9 @@ let projectKey = 0
 
 const FileUploadButton = (props) => {
     const theme = props.theme
-    const hundred = {width: "100%"}
+    const hundred1 = {width: "100%"}
+    const hundred2 = {width: "100%"}
+    const hundred3 = {width: "100%"}
     const three80 = {width: "380px"}
     const max380 = {maxWidth: "380px", whiteSpace: 'pre'}
     const alignCenter = {textAlign: "center"}
@@ -367,24 +369,26 @@ const FileUploadButton = (props) => {
         let pct = Array(Object.keys(swaggerMap).length).fill(0.0)
 
         for (const [key, value] of Object.entries(swaggerMap)) {
-            let localTested = ''
-            let testNum = 0
-            let localNot = ''
-            let notNum = 0
+            if (key !== '') {
+                let localTested = ''
+                let testNum = 0
+                let localNot = ''
+                let notNum = 0
 
-            for (const currentVal of value) {
-                if (fullGatling.includes(currentVal)) {
-                    localTested = localTested + currentVal + '\n'
-                    testNum += 1
-                } else {
-                    localNot = localNot + currentVal + '\n'
-                    notNum += 1
+                for (const currentVal of value) {
+                    if (fullGatling.includes(currentVal)) {
+                        localTested = localTested + currentVal + '\n'
+                        testNum += 1
+                    } else {
+                        localNot = localNot + currentVal + '\n'
+                        notNum += 1
+                    }
                 }
+                arr[counter] = localTested
+                arr[counter + 1] = localNot
+                pct[counter / 2] = (testNum * 100) / (testNum + notNum)
+                counter += 2
             }
-            arr[counter] = localTested
-            arr[counter + 1] = localNot
-            pct[counter / 2] = (testNum * 100) / (testNum + notNum)
-            counter += 2
         }
 
         setGatlingSplit(arr)
@@ -397,24 +401,26 @@ const FileUploadButton = (props) => {
         let pct = Array(Object.keys(swaggerMap).length).fill(0.0)
 
         for (const [key, value] of Object.entries(swaggerMap)) {
-            let localTested = ''
-            let testNum = 0
-            let localNot = ''
-            let notNum = 0
+            if (key !== '') {
+                let localTested = ''
+                let testNum = 0
+                let localNot = ''
+                let notNum = 0
 
-            for (const currentVal of value) {
-                if (fullSelenium.includes(currentVal)) {
-                    localTested = localTested + currentVal + '\n'
-                    testNum += 1
-                } else {
-                    localNot = localNot + currentVal + '\n'
-                    notNum += 1
+                for (const currentVal of value) {
+                    if (fullSelenium.includes(currentVal)) {
+                        localTested = localTested + currentVal + '\n'
+                        testNum += 1
+                    } else {
+                        localNot = localNot + currentVal + '\n'
+                        notNum += 1
+                    }
                 }
+                arr[counter] = localTested
+                arr[counter + 1] = localNot
+                pct[counter / 2] = (testNum * 100) / (testNum + notNum)
+                counter += 2
             }
-            arr[counter] = localTested
-            arr[counter + 1] = localNot
-            pct[counter / 2] = (testNum * 100) / (testNum + notNum)
-            counter += 2
         }
 
         setSeleniumSplit(arr)
@@ -427,31 +433,33 @@ const FileUploadButton = (props) => {
         let pct = Array(Object.keys(swaggerMap).length * 2).fill(0.0)
 
         for (const [key, value] of Object.entries(swaggerMap)) {
-            let localFullTested = ''
-            let fullNum = 0
-            let localPartialTested = ''
-            let partialNum = 0
-            let localNot = ''
-            let notNum = 0
+            if (key !== '') {
+                let localFullTested = ''
+                let fullNum = 0
+                let localPartialTested = ''
+                let partialNum = 0
+                let localNot = ''
+                let notNum = 0
 
-            for (const currentVal of value) {
-                if (fullSwagger.includes(currentVal)) {
-                    localFullTested = localFullTested + currentVal + '\n'
-                    fullNum += 1
-                } else if (partialSwagger.includes(currentVal)) {
-                    localPartialTested = localPartialTested + currentVal + '\n'
-                    partialNum += 1
-                } else {
-                    localNot = localNot + currentVal + '\n'
-                    notNum += 1
+                for (const currentVal of value) {
+                    if (fullSwagger.includes(currentVal)) {
+                        localFullTested = localFullTested + currentVal + '\n'
+                        fullNum += 1
+                    } else if (partialSwagger.includes(currentVal)) {
+                        localPartialTested = localPartialTested + currentVal + '\n'
+                        partialNum += 1
+                    } else {
+                        localNot = localNot + currentVal + '\n'
+                        notNum += 1
+                    }
                 }
+                arr[counter] = localFullTested
+                arr[counter + 1] = localPartialTested
+                arr[counter + 2] = localNot
+                pct[(counter / 3) * 2] = (fullNum * 100) / (partialNum + fullNum + notNum)
+                pct[(counter / 3) * 2 + 1] = (partialNum * 100) / (partialNum + fullNum + notNum)
+                counter += 3
             }
-            arr[counter] = localFullTested
-            arr[counter + 1] = localPartialTested
-            arr[counter + 2] = localNot
-            pct[(counter / 3) * 2] = (fullNum * 100) / (partialNum + fullNum + notNum)
-            pct[(counter / 3) * 2 + 1] = (partialNum * 100) /  (partialNum + fullNum + notNum)
-            counter += 3
         }
 
         setSwaggerSplit(arr)
@@ -730,7 +738,7 @@ const FileUploadButton = (props) => {
                                 <h3>Total Coverage</h3>
                                 <PieChartComponent />
                                 <div style={alignCenter}>
-                                    <Button style={centerButton} variant="primary" style={hundred} onClick={() => handleExpandAllSwagger()}>{expandStatusList[0]}</Button>
+                                    <Button style={centerButton} variant="primary" style={hundred1} onClick={() => handleExpandAllSwagger()}>{expandStatusList[0]}</Button>
                                 </div>
                                 {Object.entries(swaggerMap).map(([key,value], index)=>{
                                     return (
@@ -768,7 +776,7 @@ const FileUploadButton = (props) => {
                                 <GatlingPieChart />
 
                             <div style={{textAlign: "center"}}>
-                                <Button style={centerButton} variant="primary" style={hundred} onClick={() => handleExpandAllGatling()}>{expandStatusList[1]}</Button>
+                                <Button style={centerButton} variant="primary" style={hundred2} onClick={() => handleExpandAllGatling()}>{expandStatusList[1]}</Button>
                             </div>
                             {Object.entries(swaggerMap).map(([key,value], index)=>{
                                 return (
@@ -800,7 +808,7 @@ const FileUploadButton = (props) => {
                             <h3>Selenium</h3>
                             <SeleniumPieChart />
                             <div style={{textAlign: "center"}}>
-                                <Button style={centerButton} variant="primary" style={hundred} onClick={() => handleExpandAllSelenium()}>{expandStatusList[2]}</Button>
+                                <Button style={centerButton} variant="primary" style={hundred3} onClick={() => handleExpandAllSelenium()}>{expandStatusList[2]}</Button>
                             </div>
                             {Object.entries(swaggerMap).map(([key,value], index)=>{
                                 return (
@@ -808,6 +816,7 @@ const FileUploadButton = (props) => {
                                         <br/>
                                         <Button style={centerButton} variant="outline-dark" style={three80} onClick={() => handleCollapseSelenium(index)}>{key}</Button>
                                         {seleniumCollapse.at(index) ?
+
                                             <div>
                                                 <div style={styles}>{seleniumPct[index].toFixed(2)}% Coverage</div>
                                                 <div style={max380}>
