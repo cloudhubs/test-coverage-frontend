@@ -14,10 +14,6 @@ let projectKey = 0
 
 const FileUploadButton = (props) => {
     const theme = props.theme
-    const hundred1 = {width: "100%"}
-    const hundred2 = {width: "100%"}
-    const hundred3 = {width: "100%"}
-    const three80 = {width: "380px"}
     const max380 = {maxWidth: "380px", whiteSpace: 'pre'}
     const alignCenter = {textAlign: "center"}
 
@@ -198,6 +194,13 @@ const FileUploadButton = (props) => {
         alignItems: 'center',
         justifyContent: 'center',
         width: '100%',
+    }
+
+    const centerButton380 = {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: '380px',
     }
 
     const handleDelete = (event, index) => {
@@ -738,13 +741,13 @@ const FileUploadButton = (props) => {
                                 <h3>Total Coverage</h3>
                                 <PieChartComponent />
                                 <div style={alignCenter}>
-                                    <Button style={centerButton} variant="primary" style={hundred1} onClick={() => handleExpandAllSwagger()}>{expandStatusList[0]}</Button>
+                                    <Button style={centerButton} variant="primary" onClick={() => handleExpandAllSwagger()}>{expandStatusList[0]}</Button>
                                 </div>
                                 {Object.entries(swaggerMap).map(([key,value], index)=>{
                                     return (
                                         <div>
                                             <br/>
-                                            <Button style={centerButton} variant="outline-dark" style={three80} onClick={() => handleCollapseSwagger(index)}>{key}</Button>
+                                            <Button style={centerButton380} variant="outline-dark" onClick={() => handleCollapseSwagger(index)}>{key}</Button>
                                             {swaggerCollapse.at(index) ?
                                                 <div>
                                                     {/*<div>{index}</div>*/}
@@ -776,13 +779,13 @@ const FileUploadButton = (props) => {
                                 <GatlingPieChart />
 
                             <div style={{textAlign: "center"}}>
-                                <Button style={centerButton} variant="primary" style={hundred2} onClick={() => handleExpandAllGatling()}>{expandStatusList[1]}</Button>
+                                <Button style={centerButton} variant="primary" onClick={() => handleExpandAllGatling()}>{expandStatusList[1]}</Button>
                             </div>
                             {Object.entries(swaggerMap).map(([key,value], index)=>{
                                 return (
                                     <div>
                                         <br/>
-                                        <Button style={centerButton} variant="outline-dark" style={three80} onClick={() => handleCollapseGatling(index)}>{key}</Button>
+                                        <Button style={centerButton380} variant="outline-dark" onClick={() => handleCollapseGatling(index)}>{key}</Button>
                                         {gatlingCollapse.at(index) ?
                                             <div>
                                                 <div style={styles}>{gatlingPct[index].toFixed(2)}% Coverage</div>
@@ -808,13 +811,13 @@ const FileUploadButton = (props) => {
                             <h3>Selenium</h3>
                             <SeleniumPieChart />
                             <div style={{textAlign: "center"}}>
-                                <Button style={centerButton} variant="primary" style={hundred3} onClick={() => handleExpandAllSelenium()}>{expandStatusList[2]}</Button>
+                                <Button style={centerButton} variant="primary" onClick={() => handleExpandAllSelenium()}>{expandStatusList[2]}</Button>
                             </div>
                             {Object.entries(swaggerMap).map(([key,value], index)=>{
                                 return (
                                     <div>
                                         <br/>
-                                        <Button style={centerButton} variant="outline-dark" style={three80} onClick={() => handleCollapseSelenium(index)}>{key}</Button>
+                                        <Button style={centerButton380} variant="outline-dark" onClick={() => handleCollapseSelenium(index)}>{key}</Button>
                                         {seleniumCollapse.at(index) ?
 
                                             <div>
