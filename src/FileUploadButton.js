@@ -15,8 +15,6 @@ let x = -1
 
 const FileUploadButton = (props) => {
     const theme = props.theme
-    // const widthNum = window.innerWidth / 3 - 100
-    // const width = widthNum.toString() + "px"
 
     const [projectZip, setProjectZip] = useState();
     const [testZip, setTestZip] = useState();
@@ -65,20 +63,9 @@ const FileUploadButton = (props) => {
     const [jsonButton] = useState('JSON')
     const [jsonBool, setJsonBool] = useState(false)
 
-    const [testMap, setTestMap] = useState([])
-    const [testMapString, setTestMapString] = useState('')
-    const [testMapObj, setTestMapObj] = useState('')
-
-    const [keyList, setKeyList] = useState([])
-    const [valueList, setValueList] = useState([])
     const [collapseList, setCollapseList] = useState([])
-    const [collapse, setCollapse] = useState(false)
     const [expandALl, setExpandAll] = useState(false)
     const [expandStatus, setExpandStatus] = useState("Expand All")
-    const [testExpandingList, setTestExpandingList] = useState('')
-    const [length, setLength] = useState(-1)
-    const [testTemp, setTestTemp] = useState([''])
-    const [globalPls, setGlobalPls] = useState('')
     const [num, setNum] = useState(-1)
     const [existing, setExisting] = useState(['PATCH /patch', 'GET /1/1', 'DELETE /delete'])
     const [percentPer, setPercentPer] = useState([])
@@ -257,10 +244,7 @@ const FileUploadButton = (props) => {
             let localNot = ''
             let notNum = 0
             let ind = Array.prototype.indexOf.call(testMap, key)
-            // setNum(ind)
              for (const currentVal of value) {
-                 // let tempStr = testExpandingList
-                 // setTestExpandingList(tempStr)
                  if (existing.includes(currentVal)) {
                      localTested = localTested + currentVal + '\n'
                      testNum += 1
@@ -268,42 +252,13 @@ const FileUploadButton = (props) => {
                      localNot = localNot + currentVal + '\n'
                      notNum += 1
                  }
-                 // local = local + currentVal + '\n'
              }
-             // let current = [...testTemp]
-            // current[counter] = local
             arr[counter] = localTested
             arr[counter + 1] = localNot
             pct[counter / 2] = (testNum * 100) / (testNum + notNum)
             counter += 2
-            // setTestTemp(current)
-            // setTestExpandingList(local)
         }
-        setTestTemp(arr);
         setPercentPer(pct)
-        // x = testMap.length
-        // const plsplspls = testMap
-        // let plsWork = vals[0];
-        // setGlobalPls(plsWork)
-        // let pls = ''
-        // for (let value of testMap.values()) {
-            // for (let value of values) {
-            //     pls = pls + value + ' '
-            // }
-            // setGlobalPls(testMap.values[0])
-        // }
-        // setLength(Object.keys(testMap).length)
-        // setTestTemp(testTemp)
-        // setTestExpandingList(['', '', ''])
-        // for (let i = 0; i < 3; i++) {
-        //     let current = [...testExpandingList]
-        //     let currentStr = '1'
-        //     for (let j = 0; j < 3; j++) {
-        //         // currentStr = currentStr + testMap[i].value[j] + '\n'
-        //     }
-        //     current[i] = currentStr
-        //     setTestExpandingList(current)
-        // }
     }
 
     const prettifyJSON = (str) => {
@@ -515,7 +470,6 @@ const FileUploadButton = (props) => {
             arr[counter + 1] = localNot
             pct[counter / 2] = (testNum * 100) / (testNum + notNum)
             counter += 2
-            // setTestingLength(value.length)
         }
 
         setSeleniumSplit(arr)
@@ -552,9 +506,7 @@ const FileUploadButton = (props) => {
             arr[counter + 2] = localNot
             pct[(counter / 3) * 2] = (fullNum * 100) / (partialNum + fullNum + notNum)
             pct[(counter / 3) * 2 + 1] = (partialNum * 100) /  (partialNum + fullNum + notNum)
-            // pct[counter / 2] = (testNum * 100) / (testNum + notNum)
             counter += 3
-            // setTestingLength(value.length)
         }
 
         setSwaggerSplit(arr)
@@ -635,7 +587,6 @@ const FileUploadButton = (props) => {
             .then((response) => {
             console.log(response);
         });
-            // .catch((err) => console.error(err))
 
         await axios.post("http://localhost:8080/requests/logs/regexList", regex)
             .then((response) => {
@@ -760,25 +711,25 @@ const FileUploadButton = (props) => {
                 setNoSelenium(responseString);
             }).catch((err) => console.error(err))
 
-        await axios.get("http://localhost:8080/tests/coverage/getTestMap")
-            .then((res) => {
-                console.log(res.data)
-
-                setTestMap(res.data);
-
-                /** Good */
-                setKeyList(Object.keys(res.data));
-                setTestMapString("test2");
-                setCollapseList(Array(Object.keys(res.data).length).fill(false))
-
-
-                Object.keys(res.data).map((current) => {
-                    return (
-                        setValueList([...valueList, res.data[current]])
-                    );
-                })
-
-            }).catch((err) => console.error(err))
+        // await axios.get("http://localhost:8080/tests/coverage/getTestMap")
+        //     .then((res) => {
+        //         console.log(res.data)
+        //
+        //         setTestMap(res.data);
+        //
+        //         /** Good */
+        //         setKeyList(Object.keys(res.data));
+        //         setTestMapString("test2");
+        //         setCollapseList(Array(Object.keys(res.data).length).fill(false))
+        //
+        //
+        //         Object.keys(res.data).map((current) => {
+        //             return (
+        //                 setValueList([...valueList, res.data[current]])
+        //             );
+        //         })
+        //
+        //     }).catch((err) => console.error(err))
 
         await axios.get("http://localhost:8080/tests/coverage/getSwaggerMap")
             .then((res) => {
@@ -793,32 +744,13 @@ const FileUploadButton = (props) => {
 
         await axios.get("http://localhost:8080/tests/coverage/getJsonCoverage")
             .then((res) => {
-                // setJsonStr(res.data.reduce((acc, obj) => {
-                //     return acc + `${obj}\n`
-                // }, ''))
-                // setJsonStr(res.toString)
                 console.log(res.data)
-
-                // setJsonStr(res.data)
-
-                // const responseString = res.data.reduce((acc, obj) => {
-                //     return acc + `${obj.method} ${obj.path}\n`
-                // }, '')
-
-                // setJsonStr(res.data + '}')
                 prettifyJSON(res.data + '}')
             }).catch((err) => console.error(err))
 
-        // handleListSetters()
-
-        // setLoading(false)
         handleShow()
 
-        // setLoading(false)
         handleShow()
-
-        // setShow(false)
-        // await timeout(1000);
 
         this.forceUpdate()
     }
@@ -854,15 +786,6 @@ const FileUploadButton = (props) => {
                 data-testid="loader"
             />
 
-            {/*<div>*/}
-            {/*    <br/>*/}
-            {/*    <Button onClick={() => setCollapse(!collapse)}>Switch</Button>*/}
-            {/*    {collapse ?*/}
-            {/*        <div>show</div>*/}
-            {/*        : null*/}
-            {/*    }*/}
-            {/*</div>*/}
-
             <br/>
             {showPieChart ?
                 <div>
@@ -871,80 +794,8 @@ const FileUploadButton = (props) => {
                 </div>
                 : null}
 
-            <br/>
-            {/*<div>*/}
-            {/*    <div>TESTING</div>*/}
-            {/*    <div>collapse list size: {collapseList.length}</div>*/}
-            {/*    <Button variant="primary" style={{width: "380px"}} onClick={() => handleExpandAll()}>{expandStatus}</Button>*/}
-            {/*    {Object.entries(testMap).map(([key,value], index)=>{*/}
-            {/*        return (*/}
-            {/*            <div>*/}
-            {/*                <br/>*/}
-            {/*                <div style={styles}>*/}
-            {/*                    <Button variant="outline-dark" style={{width: "380px"}} onClick={() => handleCollapse(index)}>{key}</Button>*/}
-            {/*                </div>*/}
-            {/*                <div>*/}
-            {/*                    {collapseList.at(index) ?*/}
-            {/*                        <div style={styles}>*/}
-            {/*                            /!*<div>{x}</div>*!/*/}
-            {/*                            <div style={{color: 'green'}}>{percentPer[index].toFixed(2)}% Coverage</div>*/}
-            {/*                            /!*<div>{value.toString()}</div>*!/*/}
-            {/*                            /!*<div>{testExpandingList}</div>*!/*/}
-            {/*                            /!*<div>{num}</div>*!/*/}
-            {/*                            /!*<div>{testTemp[index]}</div>*!/*/}
-            {/*                            <div style={{maxWidth: "380px", whiteSpace: 'pre'}}>*/}
-            {/*                                <textarea style={{color: "green"}} cols="50" readOnly="true" rows={testTemp[index * 2].split(/\r\n|\r|\n/).length - 1}>{testTemp[index * 2]}</textarea>*/}
-            {/*                            </div>*/}
-            {/*                            <div style={{maxWidth: "380px", whiteSpace: 'pre'}}>*/}
-            {/*                                <textarea style={{color: "red"}} cols="50" readOnly="true" rows={testTemp[index * 2 + 1].split(/\r\n|\r|\n/).length - 1}>{testTemp[index * 2 + 1]}</textarea>*/}
-            {/*                            </div>*/}
-            {/*                                /!*<div>{globalPls}</div>*!/*/}
-            {/*                            /!*<div>{length}</div>*!/*/}
-            {/*                            /!*<div>{Object.keys(testMap).length}</div>*!/*/}
-            {/*                        </div>*/}
-            {/*                        : null}*/}
-            {/*                </div>*/}
-            {/*                /!*<div>{key}</div>*!/*/}
-            {/*                /!*<div>{value.toString()}</div>*!/*/}
-            {/*            </div>*/}
-            {/*        );*/}
-            {/*    })*/}
-            {/*    }*/}
-            {/*    /!*<div>{collapseList.toString()}</div>*!/*/}
-            {/*</div>*/}
-            <br/>
 
-            {/*<div key={projectKey}>*/}
-            {/*    <div>Key list: {keyList.toString()}</div>*/}
-            {/*    <div>*/}
-            {/*        {Object.entries(keyList).map((current,index)=>{*/}
-            {/*            return (*/}
-            {/*                <div>*/}
-            {/*                    <div>{current}</div>*/}
-            {/*                    <div>key: {current} - {collapseList.at(index).toString()}</div>*/}
-            {/*                </div>*/}
-            {/*            );*/}
-            {/*        })}*/}
-            {/*    </div>*/}
-            {/*    <br/>*/}
-            {/*    <div>*/}
-            {/*        {Object.entries(testMap).map(([key,value])=>{*/}
-            {/*            return (*/}
-            {/*                <div>*/}
-            {/*                    <div>{key}</div>*/}
-            {/*                    <div>{value.toString()}</div>*/}
-            {/*                </div>*/}
-            {/*            );*/}
-            {/*        })*/}
-            {/*        }*/}
-            {/*    </div>*/}
-            {/*    <div>*/}
-            {/*        {testMapString}*/}
-            {/*    </div>*/}
-            {/*    <div>*/}
-            {/*        {tempData.map((current) => <div>{current.id} {current.name}</div>)}*/}
-            {/*    </div>*/}
-            {/*</div>*/}
+            <br/>
 
             <Container fluid>
                 <Row>
@@ -953,16 +804,6 @@ const FileUploadButton = (props) => {
                             <div key={projectKey} style={{maxWidth: "380px", whiteSpace: 'pre'}}>
                                 <h3>Total Coverage</h3>
                                 <PieChartComponent />
-                                {/*{showPieChart ?*/}
-                                {/*    <div style={{maxWidth: "380px", whiteSpace: 'pre'}}>*/}
-                                {/*        <textarea style={{color: "green"}} cols="50" readOnly="true" rows={fullSelenium.split(/\r\n|\r|\n/).length}>{fullSelenium}</textarea>*/}
-                                {/*    </div>*/}
-                                {/*    : null}*/}
-                                {/*{showPieChart ?*/}
-                                {/*    <div style={{maxWidth: "380px", whiteSpace: 'pre'}}>*/}
-                                {/*        <textarea style={{color: "red"}} cols="50" readOnly="true" rows={noSelenium.split(/\r\n|\r|\n/).length}>{noSelenium}</textarea>*/}
-                                {/*    </div>*/}
-                                {/*    : null}*/}
                                 <div style={{textAlign: "center"}}>
                                     <Button style={centerButton} variant="primary" style={{width: "100%"}} onClick={() => handleExpandAllSwagger()}>{expandStatusList[0]}</Button>
                                 </div>
@@ -994,42 +835,12 @@ const FileUploadButton = (props) => {
                                 }
                             </div>
                             : null}
-                        {/*<div key={projectKey} style={{maxWidth: "380px", whiteSpace: 'pre'}}>*/}
-                            {/*{showPieChart ?*/}
-                            {/*    <h3>Total Coverage</h3>*/}
-                            {/*     : null}*/}
-                            {/*{showPieChart ?*/}
-                            {/*    <PieChartComponent />*/}
-                            {/* : null}*/}
-                            {/*{showPieChart ?*/}
-                            {/*    <div style={{maxWidth: "380px", whiteSpace: 'pre'}}>*/}
-                            {/*        <textarea style={{color: "green"}} cols="50" readOnly="true" rows={fullSwagger.split(/\r\n|\r|\n/).length}>{fullSwagger}</textarea>*/}
-                            {/*    </div>*/}
-                            {/*    : null}*/}
-                            {/*{showPieChart ?*/}
-                            {/*    <div style={{maxWidth: "380px", whiteSpace: 'pre'}}>*/}
-                            {/*        <textarea style={{color: "gold"}} cols="50" readOnly="true" rows={partialSwagger.split(/\r\n|\r|\n/).length}>{partialSwagger}</textarea>*/}
-                            {/*    </div>*/}
-                            {/*    : null}*/}
-                            {/*{showPieChart ?*/}
-                            {/*    <div style={{maxWidth: "380px", whiteSpace: 'pre'}}>*/}
-                            {/*        <textarea style={{color: "red"}} cols="50" readOnly="true" rows={noSwagger.split(/\r\n|\r|\n/).length}>{noSwagger}</textarea>*/}
-                            {/*    </div>*/}
-                            {/*    : null}*/}
-                        {/*</div>*/}
                     </Col>
                     <Col>
                         {showPieChart ?
                         <div key={projectKey} style={{maxWidth: "380px", whiteSpace: 'pre'}}>
-                            {/*{showPieChart ?*/}
                                 <h3>Gatling</h3>
-                                {/* : null}*/}
-                            {/*{showPieChart ?*/}
                                 <GatlingPieChart />
-                                {/*: null}*/}
-                            {/*<div>{swaggerMap.length}</div>*/}
-                            {/*<div>{Object.keys(swaggerMap).length}</div>*/}
-                            {/*<div>{gatlingSplit.toString()}</div>*/}
 
                             <div style={{textAlign: "center"}}>
                                 <Button style={centerButton} variant="primary" style={{width: "100%"}} onClick={() => handleExpandAllGatling()}>{expandStatusList[1]}</Button>
@@ -1041,8 +852,6 @@ const FileUploadButton = (props) => {
                                         <Button style={centerButton} variant="outline-dark" style={{width: "380px"}} onClick={() => handleCollapseGatling(index)}>{key}</Button>
                                         {gatlingCollapse.at(index) ?
                                             <div>
-                                                {/*<div>{index}</div>*/}
-                                                {/*<div>{testingLength}</div>*/}
                                                 <div style={styles}>{gatlingPct[index].toFixed(2)}% Coverage</div>
                                                 <div style={{maxWidth: "380px", whiteSpace: 'pre'}}>
                                                     <textarea style={{color: "green"}} cols="43" readOnly="true" rows={gatlingSplit[index * 2].split(/\r\n|\r|\n/).length - 1 | 2}>{gatlingSplit[index * 2]}</textarea>
@@ -1057,16 +866,6 @@ const FileUploadButton = (props) => {
                             })
                             }
 
-                            {/*{showPieChart ?*/}
-                            {/*    <div style={{maxWidth: "380px", whiteSpace: 'pre'}}>*/}
-                            {/*        <textarea style={{color: "green"}} cols="50" readOnly="true" rows={fullGatling.split(/\r\n|\r|\n/).length}>{fullGatling}</textarea>*/}
-                            {/*    </div>*/}
-                            {/*    : null}*/}
-                            {/*{showPieChart ?*/}
-                            {/*    <div style={{maxWidth: "380px", whiteSpace: 'pre'}}>*/}
-                            {/*        <textarea style={{color: "red"}} cols="50" readOnly="true" rows={noGatling.split(/\r\n|\r|\n/).length}>{noGatling}</textarea>*/}
-                            {/*    </div>*/}
-                            {/*    : null}*/}
                         </div>
                             : null}
                     </Col>
@@ -1075,16 +874,6 @@ const FileUploadButton = (props) => {
                         <div key={projectKey} style={{maxWidth: "380px", whiteSpace: 'pre'}}>
                             <h3>Selenium</h3>
                             <SeleniumPieChart />
-                            {/*{showPieChart ?*/}
-                            {/*    <div style={{maxWidth: "380px", whiteSpace: 'pre'}}>*/}
-                            {/*        <textarea style={{color: "green"}} cols="50" readOnly="true" rows={fullSelenium.split(/\r\n|\r|\n/).length}>{fullSelenium}</textarea>*/}
-                            {/*    </div>*/}
-                            {/*    : null}*/}
-                            {/*{showPieChart ?*/}
-                            {/*    <div style={{maxWidth: "380px", whiteSpace: 'pre'}}>*/}
-                            {/*        <textarea style={{color: "red"}} cols="50" readOnly="true" rows={noSelenium.split(/\r\n|\r|\n/).length}>{noSelenium}</textarea>*/}
-                            {/*    </div>*/}
-                            {/*    : null}*/}
                             <div style={{textAlign: "center"}}>
                                 <Button style={centerButton} variant="primary" style={{width: "100%"}} onClick={() => handleExpandAllSelenium()}>{expandStatusList[2]}</Button>
                             </div>
@@ -1095,8 +884,6 @@ const FileUploadButton = (props) => {
                                         <Button style={centerButton} variant="outline-dark" style={{width: "380px"}} onClick={() => handleCollapseSelenium(index)}>{key}</Button>
                                         {seleniumCollapse.at(index) ?
                                             <div>
-                                                {/*<div>{index}</div>*/}
-                                                {/*<div>{testingLength}</div>*/}
                                                 <div style={styles}>{seleniumPct[index].toFixed(2)}% Coverage</div>
                                                 <div style={{maxWidth: "380px", whiteSpace: 'pre'}}>
                                                     <textarea style={{color: "green"}} cols="43" readOnly="true" rows={seleniumSplit[index * 2].split(/\r\n|\r|\n/).length - 1 | 2}>{seleniumSplit[index * 2]}</textarea>
@@ -1124,7 +911,6 @@ const FileUploadButton = (props) => {
                     <form>
                         <label>
                             {fieldPrompt}
-                            {/*<textarea value={field} onChange={handleFieldChange}></textarea>*/}
                             <input value={field} onChange={handleFieldChange}/>
                         </label>
                     </form>
@@ -1149,12 +935,6 @@ const FileUploadButton = (props) => {
                 </Modal.Header>
                 <Modal.Body>
                     <form>
-                        {/*<label>*/}
-                        {/*    {fieldPrompt}*/}
-                        {/*    test*/}
-                        {/*    <textarea value={field} onChange={handleFieldChange}></textarea>*/}
-                        {/*    <input value={field} onChange={handleFieldChange}/>*/}
-                        {/*</label>*/}
                         {regex.map((obj, index) => (
                             <div className="whole-input">
                                 <div className="input-box">
@@ -1167,28 +947,10 @@ const FileUploadButton = (props) => {
                                         regex={regex}
                                     />
                                 </div>
-                                <div className="error-text">
-                                    {/*{regexErrorText[index]}*/}
-                                    {/*<h8 style={{ color: 'red' }}>{regexErrorText}</h8>*/}
-                                </div>
                             </div>
                         ))}
                         <h8 style={{ color: 'red' }}>{regexErrorText}</h8>
                     </form>
-
-                    <div>
-                        {/*{regex.toString()}*/}
-                        {/*{regex.map((current) =>*/}
-                        {/*    <div>*/}
-                        {/*        <input value={current} onChange={handleRegexChange}/>*/}
-                        {/*        <Button variant="danger" onClick={handleDelete} disabled={regex.length <= 1}>*/}
-                        {/*            Delete*/}
-                        {/*        </Button>*/}
-                        {/*    </div>*/}
-                        {/*)}*/}
-                    </div>
-
-
 
                     <Button variant="warning" disabled={regex.length >= maxRegex} onClick={handleAdd}>
                         Add
