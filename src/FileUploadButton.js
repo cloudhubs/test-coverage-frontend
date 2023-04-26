@@ -11,7 +11,6 @@ import SeleniumPieChart, {seleniumData} from "./SeleniumPieChart";
 import RegexInput from "./RegexInput";
 
 let projectKey = 0
-let x = -1
 
 const FileUploadButton = (props) => {
     const theme = props.theme
@@ -57,25 +56,10 @@ const FileUploadButton = (props) => {
     const [gatlingPct, setGatlingPct] = useState([])
     const [seleniumPct, setSeleniumPct] = useState([])
     const [swaggerPct, setSwaggerPct] = useState([])
-    const [testingLength, setTestingLength] = useState(-1)
 
     const [jsonStr, setJsonStr] = useState('')
     const [jsonButton] = useState('JSON')
     const [jsonBool, setJsonBool] = useState(false)
-
-    const [collapseList, setCollapseList] = useState([])
-    const [expandALl, setExpandAll] = useState(false)
-    const [expandStatus, setExpandStatus] = useState("Expand All")
-    const [num, setNum] = useState(-1)
-    const [existing, setExisting] = useState(['PATCH /patch', 'GET /1/1', 'DELETE /delete'])
-    const [percentPer, setPercentPer] = useState([])
-    const [firstExpand, setFirstExpand] = useState(false)
-
-    const tempData = [
-        {id: 1, name: "john"},
-        {id: 2, name: "donny"},
-        {id: 3, name: "chris"},
-    ];
 
     const fieldPrompt = "Field:  "
 
@@ -233,34 +217,6 @@ const FileUploadButton = (props) => {
         }
     };
 
-    const handleListSetters = () => {
-        let counter = 0
-        setNum(Object.keys(testMap).length)
-        let arr = Array(Object.keys(testMap).length * 2).fill('')
-        let pct = Array(Object.keys(testMap).length).fill(0.0)
-        for (const [key, value] of Object.entries(testMap)) {
-            let localTested = ''
-            let testNum = 0
-            let localNot = ''
-            let notNum = 0
-            let ind = Array.prototype.indexOf.call(testMap, key)
-             for (const currentVal of value) {
-                 if (existing.includes(currentVal)) {
-                     localTested = localTested + currentVal + '\n'
-                     testNum += 1
-                 } else {
-                     localNot = localNot + currentVal + '\n'
-                     notNum += 1
-                 }
-             }
-            arr[counter] = localTested
-            arr[counter + 1] = localNot
-            pct[counter / 2] = (testNum * 100) / (testNum + notNum)
-            counter += 2
-        }
-        setPercentPer(pct)
-    }
-
     const prettifyJSON = (str) => {
         try {
             const json = JSON.parse(str);
@@ -274,20 +230,6 @@ const FileUploadButton = (props) => {
     const handleCloseJsonModal = () => {
         // prettifyJSON();
         setJsonBool(false);
-    }
-
-    const handleCollapse = (index) => {
-        if (firstExpand === false) {
-            setFirstExpand(true)
-            handleListSetters()
-        }
-        let current = [...collapseList]
-        // let update = {...collapseList[index]}
-        // update = !update
-        let update = current[index]
-        current[index] = !update
-
-        setCollapseList(current)
     }
 
     const handleExpandAllGatling = () => {
@@ -439,7 +381,6 @@ const FileUploadButton = (props) => {
             arr[counter + 1] = localNot
             pct[counter / 2] = (testNum * 100) / (testNum + notNum)
             counter += 2
-            setTestingLength(value.length)
         }
 
         setGatlingSplit(arr)
@@ -511,26 +452,6 @@ const FileUploadButton = (props) => {
 
         setSwaggerSplit(arr)
         setSwaggerPct(pct)
-    }
-
-    const handleExpandAll = () => {
-        if (firstExpand === false) {
-            setFirstExpand(true)
-            handleListSetters()
-        }
-        let expanded = expandALl
-        expanded = !expanded
-        setExpandAll(expanded)
-        let current = [...collapseList]
-        current.fill(expanded)
-
-        if (expandStatus.toString() === "Expand All") {
-            setExpandStatus("Collapse All")
-        } else {
-            setExpandStatus("Expand All")
-        }
-
-        setCollapseList(current)
     }
 
     const sendFiles = async() => {
