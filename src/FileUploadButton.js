@@ -38,7 +38,8 @@ const FileUploadButton = (props) => {
 
     const [showField, setShowField] = useState(false)
     const [showRegex, setShowRegex] = useState(false)
-    const [field, setField] = useState('')
+    const [methodField, setMethodField] = useState('')
+    const [urlField, setUrlField] = useState('')
     const [fieldError, setFieldError] = useState('')
     const [regex, setRegex] = useState([''])
     const maxRegex = 10;
@@ -63,7 +64,8 @@ const FileUploadButton = (props) => {
     const [jsonButton] = useState('JSON')
     const [jsonBool, setJsonBool] = useState(false)
 
-    const fieldPrompt = "Field:  "
+    const methodFieldPrompt = "Method Field:  "
+    const urlFieldPrompt = "URL Field:  "
 
     const handleProjectZipChange = (e: ChangeEvent<HTMLInputElement>) => {
         if (e.target.files) {
@@ -85,7 +87,8 @@ const FileUploadButton = (props) => {
         if (!testZip) {
             return;
         }
-        setField('')
+        setMethodField('')
+        setUrlField('')
         setShowField(true)
         setRegex([''])
         setExpandStatusList(Array(3).fill("Expand All"))
@@ -114,8 +117,12 @@ const FileUploadButton = (props) => {
     }
 
     const handleNext = () => {
-        if (field === '') {
-            setFieldError('* Field is required *')
+        if (methodField === '') {
+            setFieldError('* Method Field is required *')
+            return;
+        }
+        if (urlField === '') {
+            setFieldError('* URL Field is required *')
             return;
         }
         setRegexErrorText('')
@@ -160,9 +167,15 @@ const FileUploadButton = (props) => {
         //setShowPieChart(true)
     }
 
-    const handleFieldChange = (event) => {
-        setField(event.target.value)
-        if (field.length > 0) {
+    const handleMethodFieldChange = (event) => {
+        setMethodField(event.target.value)
+        if (methodField.length > 0) {
+            setFieldError('')
+        }
+    }
+    const handleUrlFieldChange = (event) => {
+        setUrlField(event.target.value)
+        if (urlField.length > 0) {
             setFieldError('')
         }
     }
@@ -519,7 +532,12 @@ const FileUploadButton = (props) => {
         setSeleniumRes('')
         // }).catch((err) => console.error(err))
 
-        await axios.post("http://localhost:8080/requests/logs/field", {field: field})
+        await axios.post("http://localhost:8080/requests/logs/methodField", {field: methodField})
+            .then((response) => {
+            console.log(response);
+        });
+
+        await axios.post("http://localhost:8080/requests/logs/urlField", {field: urlField})
             .then((response) => {
             console.log(response);
         });
@@ -847,8 +865,15 @@ const FileUploadButton = (props) => {
                 <Modal.Body>
                     <form>
                         <label>
-                            {fieldPrompt}
-                            <input value={field} onChange={handleFieldChange}/>
+                            {methodFieldPrompt}
+                            <input value={methodField} onChange={handleMethodFieldChange}/>
+                        </label>
+                    </form>
+                    <br />
+                    <form>
+                        <label>
+                            {urlFieldPrompt}
+                            <input value={urlField} onChange={handleUrlFieldChange}/>
                         </label>
                     </form>
 
