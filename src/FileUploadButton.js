@@ -687,7 +687,7 @@ const FileUploadButton = (props) => {
         //
         //     }).catch((err) => console.error(err))
 
-        await axios.get("http://localhost:8080/requests/logs/endpoints", projectFormData, {
+        await axios.get("http://localhost:8080/requests/logs/endpoints", testFormData, {
             headers: {
                 'Content-Type': 'multipart/form-data'
             },
