@@ -687,6 +687,19 @@ const FileUploadButton = (props) => {
         //
         //     }).catch((err) => console.error(err))
 
+        await axios.post("http://localhost:8080/endpoints", projectFormData, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            },
+        }).then((res) => {
+            console.log(res.data)
+            //JSON.parse(res.data).forEach(element => console.log(element.method))
+            // const responseString = res.data.reduce((acc, obj) => {
+            //     return acc + `${obj.method} ${obj.path}\n`
+            // }, '')
+            // setProjectRes(responseString)
+        }).catch((err) => console.error(err))
+
         await axios.get("http://localhost:8080/tests/coverage/getSwaggerMap")
             .then((res) => {
                 console.log(res.data)
