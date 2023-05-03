@@ -89,7 +89,7 @@ const FileUploadButton = (props) => {
         }
         setMethodField('')
         setUrlField('')
-        setShowField(true)
+        // setShowField(true)
         setRegex([''])
         setExpandStatusList(Array(3).fill("Expand All"))
         setTextExpand([false, false, false])
@@ -99,6 +99,8 @@ const FileUploadButton = (props) => {
         setSeleniumCollapse(Array(Object.keys(swaggerMap).length).fill(false))
 
         setExpandAllList([false, false, false])
+        setLoading(true)
+        sendFiles()
         // setLoading(true)
         // sendFiles()
         // handleShow()
