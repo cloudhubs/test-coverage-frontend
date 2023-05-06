@@ -94,6 +94,9 @@ const FileUploadButton = (props) => {
         if (!testZip) {
             return;
         }
+        if (!selZip) {
+            return;
+        }
         setMethodField('')
         setUrlField('')
         // setShowField(true)
