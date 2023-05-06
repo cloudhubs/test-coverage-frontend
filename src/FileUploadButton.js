@@ -19,6 +19,7 @@ const FileUploadButton = (props) => {
 
     const [projectZip, setProjectZip] = useState();
     const [testZip, setTestZip] = useState();
+    const [selZip, setSelZip] = useState();
 
     const [show, setShow] = useState(false)
     const [showPieChart, setShowPieChart] = useState(false)
@@ -76,6 +77,12 @@ const FileUploadButton = (props) => {
     const handleTestZipChange = (e: ChangeEvent<HTMLInputElement>) => {
         if (e.target.files) {
             setTestZip(e.target.files[0]);
+        }
+    };
+
+    const handleSelZipChange = (e: ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files) {
+            setSelZip(e.target.files[0]);
         }
     };
 
@@ -492,6 +499,9 @@ const FileUploadButton = (props) => {
         const testFormData = new FormData();
         testFormData.append('file', testZip);
 
+        const selFormData = new FormData();
+        selFormData.append('file', selZip);
+
         //send project zip
         await axios.post("http://localhost:8080/tests/swagger/getEndPoints", projectFormData, {
             headers: {
@@ -687,7 +697,7 @@ const FileUploadButton = (props) => {
         //
         //     }).catch((err) => console.error(err))
 
-        await axios.post("http://localhost:8080/requests/logs/endpoints", testFormData, {
+        await axios.post("http://localhost:8080/requests/logs/endpoints", selFormData, {
             headers: {
                 'Content-Type': 'multipart/form-data'
             },
@@ -737,12 +747,22 @@ const FileUploadButton = (props) => {
             <br/>
             <br/>
             
-            <p>Upload tests.zip</p>
+            <p>Upload Gatling tests.zip</p>
             <input 
             type="file" 
             onChange={handleTestZipChange} 
             accept=".zip"/>
             <div>{testZip && `${testZip.name} - ${testZip.type}`}</div>
+
+            <br/>
+            <br/>
+
+            <p>Upload Selenium tests.zip</p>
+            <input
+                type="file"
+                onChange={handleSelZipChange}
+                accept=".zip"/>
+            <div>{selZip && `${selZip.name} - ${selZip.type}`}</div>
             
             <br/>
 
