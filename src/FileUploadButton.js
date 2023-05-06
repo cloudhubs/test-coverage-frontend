@@ -560,20 +560,20 @@ const FileUploadButton = (props) => {
         setSeleniumRes('')
         // }).catch((err) => console.error(err))
 
-        await axios.post("http://localhost:8080/requests/logs/methodField", {field: methodField})
-            .then((response) => {
-            console.log(response);
-        });
+        // await axios.post("http://localhost:8080/requests/logs/methodField", {field: methodField})
+        //     .then((response) => {
+        //     console.log(response);
+        // });
 
-        await axios.post("http://localhost:8080/requests/logs/urlField", {field: urlField})
-            .then((response) => {
-            console.log(response);
-        });
+        // await axios.post("http://localhost:8080/requests/logs/urlField", {field: urlField})
+        //     .then((response) => {
+        //     console.log(response);
+        // });
 
-        await axios.post("http://localhost:8080/requests/logs/regexList", regex)
-            .then((response) => {
-                console.log(response);
-            });
+        // await axios.post("http://localhost:8080/requests/logs/regexList", regex)
+        //     .then((response) => {
+        //         console.log(response);
+        //     });
 
         await axios.get(`http://localhost:8080/tests/coverage/getPartial`)
             .then(res => {
