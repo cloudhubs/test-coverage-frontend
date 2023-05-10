@@ -19,6 +19,7 @@ const FileUploadButton = (props) => {
 
     const [projectZip, setProjectZip] = useState();
     const [testZip, setTestZip] = useState();
+    const [selZip, setSelZip] = useState();
 
     const [show, setShow] = useState(false)
     const [showPieChart, setShowPieChart] = useState(false)
@@ -79,6 +80,12 @@ const FileUploadButton = (props) => {
         }
     };
 
+    const handleSelZipChange = (e: ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files) {
+            setSelZip(e.target.files[0]);
+        }
+    };
+
     const handleUploadClick = () => {
         setShowPieChart(false)
         if (!projectZip) {
@@ -87,9 +94,12 @@ const FileUploadButton = (props) => {
         if (!testZip) {
             return;
         }
+        if (!selZip) {
+            return;
+        }
         setMethodField('')
         setUrlField('')
-        setShowField(true)
+        // setShowField(true)
         setRegex([''])
         setExpandStatusList(Array(3).fill("Expand All"))
         setTextExpand([false, false, false])
@@ -99,6 +109,8 @@ const FileUploadButton = (props) => {
         setSeleniumCollapse(Array(Object.keys(swaggerMap).length).fill(false))
 
         setExpandAllList([false, false, false])
+        setLoading(true)
+        sendFiles()
         // setLoading(true)
         // sendFiles()
         // handleShow()
@@ -490,6 +502,9 @@ const FileUploadButton = (props) => {
         const testFormData = new FormData();
         testFormData.append('file', testZip);
 
+        const selFormData = new FormData();
+        selFormData.append('file', selZip);
+
         //send project zip
         await axios.post("http://localhost:8080/tests/swagger/getEndPoints", projectFormData, {
             headers: {
@@ -502,6 +517,19 @@ const FileUploadButton = (props) => {
                 return acc + `${obj.method} ${obj.path}\n`
             }, '')
             setProjectRes(responseString)
+        }).catch((err) => console.error(err))
+
+        await axios.post("http://localhost:8080/requests/logs/endpoints", selFormData, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            },
+        }).then((res) => {
+            console.log(res.data)
+            //JSON.parse(res.data).forEach(element => console.log(element.method))
+            // const responseString = res.data.reduce((acc, obj) => {
+            //     return acc + `${obj.method} ${obj.path}\n`
+            // }, '')
+            // setProjectRes(responseString)
         }).catch((err) => console.error(err))
 
         //sent testZip
@@ -532,20 +560,20 @@ const FileUploadButton = (props) => {
         setSeleniumRes('')
         // }).catch((err) => console.error(err))
 
-        await axios.post("http://localhost:8080/requests/logs/methodField", {field: methodField})
-            .then((response) => {
-            console.log(response);
-        });
+        // await axios.post("http://localhost:8080/requests/logs/methodField", {field: methodField})
+        //     .then((response) => {
+        //     console.log(response);
+        // });
 
-        await axios.post("http://localhost:8080/requests/logs/urlField", {field: urlField})
-            .then((response) => {
-            console.log(response);
-        });
+        // await axios.post("http://localhost:8080/requests/logs/urlField", {field: urlField})
+        //     .then((response) => {
+        //     console.log(response);
+        // });
 
-        await axios.post("http://localhost:8080/requests/logs/regexList", regex)
-            .then((response) => {
-                console.log(response);
-            });
+        // await axios.post("http://localhost:8080/requests/logs/regexList", regex)
+        //     .then((response) => {
+        //         console.log(response);
+        //     });
 
         await axios.get(`http://localhost:8080/tests/coverage/getPartial`)
             .then(res => {
@@ -722,12 +750,22 @@ const FileUploadButton = (props) => {
             <br/>
             <br/>
             
-            <p>Upload tests.zip</p>
+            <p>Upload Gatling tests.zip</p>
             <input 
             type="file" 
             onChange={handleTestZipChange} 
             accept=".zip"/>
             <div>{testZip && `${testZip.name} - ${testZip.type}`}</div>
+
+            <br/>
+            <br/>
+
+            <p>Upload Selenium tests.zip</p>
+            <input
+                type="file"
+                onChange={handleSelZipChange}
+                accept=".zip"/>
+            <div>{selZip && `${selZip.name} - ${selZip.type}`}</div>
             
             <br/>
 
